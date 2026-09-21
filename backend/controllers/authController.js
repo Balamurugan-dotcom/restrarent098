@@ -327,8 +327,7 @@ const sendOtp = async (req, res, next) => {
 
     res.json({
       success: true,
-      message: `OTP code sent to ${normalizedEmail}!`,
-      otp: generatedOtp, // Included for development & instant administrative preview
+      message: `OTP code has been sent to ${normalizedEmail}! Please check your email.`,
       expiresIn: '10 minutes',
     });
   } catch (error) {

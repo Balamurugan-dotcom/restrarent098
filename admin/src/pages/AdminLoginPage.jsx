@@ -17,7 +17,6 @@ const AdminLoginPage = () => {
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('admin@spicegarden.com');
   const [otpCode, setOtpCode] = useState('');
-  const [generatedDemoOtp, setGeneratedDemoOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [forgotNewPassword, setForgotNewPassword] = useState('');
@@ -38,7 +37,6 @@ const AdminLoginPage = () => {
     setShowForgotModal(true);
     setForgotEmail(formData.email || 'admin@spicegarden.com');
     setOtpCode('');
-    setGeneratedDemoOtp('');
     setOtpSent(false);
     setOtpVerified(false);
     setForgotNewPassword('');
@@ -75,7 +73,6 @@ const AdminLoginPage = () => {
       const res = await adminApi.post('/auth/send-otp', { email: forgotEmail });
       setOtpSent(true);
       setOtpVerified(false);
-      setGeneratedDemoOtp(res.data.otp || '');
       setForgotSuccess(res.data.message || `OTP sent to ${forgotEmail}`);
     } catch (err) {
       setForgotError(err.response?.data?.message || err.message || 'Failed to generate OTP.');
@@ -350,27 +347,31 @@ const AdminLoginPage = () => {
             style={{
               position: 'fixed',
               inset: 0,
-              backgroundColor: 'rgba(15, 23, 42, 0.8)',
+              backgroundColor: 'rgba(15, 23, 42, 0.85)',
               backdropFilter: 'blur(6px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               zIndex: 100,
-              padding: '1.25rem',
+              padding: '1rem 0.75rem',
+              boxSizing: 'border-box',
+              overflowY: 'auto',
             }}
           >
             <div
               style={{
                 backgroundColor: '#1E293B',
                 border: '1px solid #334155',
-                borderRadius: '18px',
-                padding: '1.75rem',
+                borderRadius: '16px',
+                padding: '1.25rem',
                 width: '100%',
-                maxWidth: '460px',
+                maxWidth: '420px',
                 color: '#FFFFFF',
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-                maxHeight: '90vh',
+                maxHeight: '92vh',
                 overflowY: 'auto',
+                overflowX: 'hidden',
+                boxSizing: 'border-box',
               }}
             >
               {/* Modal Header */}
@@ -378,11 +379,11 @@ const AdminLoginPage = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <KeyRound size={22} color="#10B981" />
                   <div>
-                    <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: '#F8FAFC' }}>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0, color: '#F8FAFC' }}>
                       Reset Admin Password
                     </h3>
                     <p style={{ fontSize: '0.75rem', color: '#94A3B8', margin: '2px 0 0 0' }}>
-                      Verify your admin email with OTP to set a new password
+                      Verify your email with OTP to set a new password
                     </p>
                   </div>
                 </div>
@@ -410,38 +411,42 @@ const AdminLoginPage = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: '4px',
                   backgroundColor: '#0F172A',
-                  padding: '6px 8px',
-                  borderRadius: '10px',
-                  marginBottom: '1.25rem',
+                  padding: '5px 6px',
+                  borderRadius: '8px',
+                  marginBottom: '1rem',
                   border: '1px solid #334155',
                   fontSize: '0.72rem',
+                  width: '100%',
+                  boxSizing: 'border-box',
                 }}
               >
                 <div
                   style={{
                     flex: 1,
                     textAlign: 'center',
-                    padding: '4px',
-                    borderRadius: '6px',
+                    padding: '4px 2px',
+                    borderRadius: '5px',
                     backgroundColor: otpSent ? 'rgba(16, 185, 129, 0.2)' : 'rgba(56, 189, 248, 0.2)',
                     color: otpSent ? '#34D399' : '#38BDF8',
                     fontWeight: 700,
+                    whiteSpace: 'nowrap',
                   }}
                 >
-                  1. Email OTP
+                  1. Email
                 </div>
                 <span style={{ color: '#475569' }}>→</span>
                 <div
                   style={{
                     flex: 1,
                     textAlign: 'center',
-                    padding: '4px',
-                    borderRadius: '6px',
+                    padding: '4px 2px',
+                    borderRadius: '5px',
                     backgroundColor: otpVerified ? 'rgba(16, 185, 129, 0.2)' : otpSent ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
                     color: otpVerified ? '#34D399' : otpSent ? '#38BDF8' : '#64748B',
                     fontWeight: otpSent ? 700 : 500,
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   2. Match OTP
@@ -451,14 +456,15 @@ const AdminLoginPage = () => {
                   style={{
                     flex: 1,
                     textAlign: 'center',
-                    padding: '4px',
-                    borderRadius: '6px',
+                    padding: '4px 2px',
+                    borderRadius: '5px',
                     backgroundColor: otpVerified ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
                     color: otpVerified ? '#38BDF8' : '#64748B',
                     fontWeight: otpVerified ? 700 : 500,
+                    whiteSpace: 'nowrap',
                   }}
                 >
-                  3. New Password
+                  3. Password
                 </div>
               </div>
 
@@ -468,14 +474,18 @@ const AdminLoginPage = () => {
                   backgroundColor: '#0F172A',
                   border: '1px dashed #334155',
                   borderRadius: '8px',
-                  padding: '0.65rem 0.85rem',
+                  padding: '0.55rem 0.75rem',
                   marginBottom: '1rem',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '6px',
+                  width: '100%',
+                  boxSizing: 'border-box',
                 }}
               >
-                <div style={{ fontSize: '0.76rem', color: '#94A3B8' }}>
+                <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>
                   Default admin: <span style={{ color: '#34D399', fontWeight: 600 }}>Admin@123</span>
                 </div>
                 <button
@@ -506,6 +516,8 @@ const AdminLoginPage = () => {
                     marginBottom: '1rem',
                     color: '#FCA5A5',
                     fontSize: '0.82rem',
+                    width: '100%',
+                    boxSizing: 'border-box',
                   }}
                 >
                   ⚠️ {forgotError}
@@ -525,116 +537,78 @@ const AdminLoginPage = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
+                    width: '100%',
+                    boxSizing: 'border-box',
                   }}
                 >
-                  <CheckCircle2 size={16} />
+                  <CheckCircle2 size={16} style={{ flexShrink: 0 }} />
                   <span>{forgotSuccess}</span>
                 </div>
               )}
 
-              {/* STEP 1: Admin Email & Generate OTP */}
-              <div style={{ marginBottom: '1.1rem' }}>
+              {/* STEP 1: Admin Email & Generate OTP (Stacked for clean mobile layout) */}
+              <div style={{ marginBottom: '1rem', width: '100%', boxSizing: 'border-box' }}>
                 <label style={{ display: 'block', fontSize: '0.78rem', color: '#94A3B8', fontWeight: 600, marginBottom: '5px' }}>
                   Step 1: Admin Email
                 </label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <div style={{ position: 'relative', flex: 1 }}>
-                    <Mail size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
-                    <input
-                      type="email"
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
-                      disabled={otpVerified}
-                      placeholder="admin@spicegarden.com"
-                      style={{
-                        width: '100%',
-                        padding: '0.65rem 0.75rem 0.65rem 2.4rem',
-                        backgroundColor: '#0F172A',
-                        border: '1px solid #334155',
-                        borderRadius: '8px',
-                        color: '#FFFFFF',
-                        fontSize: '0.85rem',
-                        outline: 'none',
-                        opacity: otpVerified ? 0.7 : 1,
-                      }}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleGenerateOtp}
-                    disabled={otpLoading || otpVerified}
+                <div style={{ position: 'relative', width: '100%', boxSizing: 'border-box', marginBottom: '0.5rem' }}>
+                  <Mail size={16} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
+                  <input
+                    type="email"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    disabled={otpVerified}
+                    placeholder="admin@spicegarden.com"
                     style={{
-                      backgroundColor: otpSent ? 'rgba(56, 189, 248, 0.15)' : '#059669',
-                      color: otpSent ? '#38BDF8' : '#FFFFFF',
-                      border: otpSent ? '1px solid rgba(56, 189, 248, 0.3)' : 'none',
+                      width: '100%',
+                      boxSizing: 'border-box',
+                      padding: '0.7rem 0.85rem 0.7rem 2.4rem',
+                      backgroundColor: '#0F172A',
+                      border: '1px solid #334155',
                       borderRadius: '8px',
-                      padding: '0.65rem 0.9rem',
-                      fontSize: '0.78rem',
-                      fontWeight: 700,
-                      cursor: otpVerified ? 'not-allowed' : 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      whiteSpace: 'nowrap',
+                      color: '#FFFFFF',
+                      fontSize: '0.88rem',
+                      outline: 'none',
+                      opacity: otpVerified ? 0.7 : 1,
                     }}
-                  >
-                    {otpLoading ? (
-                      'Generating...'
-                    ) : otpSent ? (
-                      <>
-                        <RefreshCw size={14} /> Resend OTP
-                      </>
-                    ) : (
-                      <>
-                        <Send size={14} /> Generate OTP
-                      </>
-                    )}
-                  </button>
+                  />
                 </div>
-              </div>
-
-              {/* Instant preview helper badge for generated OTP */}
-              {otpSent && generatedDemoOtp && (
-                <div
+                <button
+                  type="button"
+                  onClick={handleGenerateOtp}
+                  disabled={otpLoading || otpVerified}
                   style={{
-                    backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                    border: '1px solid rgba(56, 189, 248, 0.3)',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    backgroundColor: otpSent ? 'rgba(56, 189, 248, 0.12)' : '#059669',
+                    color: otpSent ? '#38BDF8' : '#FFFFFF',
+                    border: otpSent ? '1px solid rgba(56, 189, 248, 0.3)' : 'none',
                     borderRadius: '8px',
-                    padding: '0.6rem 0.85rem',
-                    marginBottom: '1.1rem',
+                    padding: '0.7rem 1rem',
+                    fontSize: '0.82rem',
+                    fontWeight: 700,
+                    cursor: otpVerified ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
+                    gap: '6px',
                   }}
                 >
-                  <div>
-                    <span style={{ fontSize: '0.72rem', color: '#94A3B8', display: 'block' }}>Generated OTP Code:</span>
-                    <span style={{ fontSize: '1.05rem', fontWeight: 800, color: '#38BDF8', letterSpacing: '2px', fontFamily: 'monospace' }}>
-                      {generatedDemoOtp}
-                    </span>
-                  </div>
-                  {!otpVerified && (
-                    <button
-                      type="button"
-                      onClick={() => setOtpCode(generatedDemoOtp)}
-                      style={{
-                        backgroundColor: '#38BDF8',
-                        color: '#0F172A',
-                        border: 'none',
-                        borderRadius: '6px',
-                        padding: '0.35rem 0.65rem',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Fill OTP
-                    </button>
+                  {otpLoading ? (
+                    'Generating OTP...'
+                  ) : otpSent ? (
+                    <>
+                      <RefreshCw size={14} /> Resend OTP Code
+                    </>
+                  ) : (
+                    <>
+                      <Send size={14} /> Generate & Send OTP
+                    </>
                   )}
-                </div>
-              )}
+                </button>
+              </div>
 
-              {/* STEP 2: Enter & Match OTP */}
+              {/* STEP 2: Enter & Match OTP (Clean full-width mobile alignment) */}
               {otpSent && (
                 <div
                   style={{
@@ -642,10 +616,12 @@ const AdminLoginPage = () => {
                     border: otpVerified ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid #334155',
                     borderRadius: '10px',
                     padding: '0.85rem',
-                    marginBottom: '1.1rem',
+                    marginBottom: '1rem',
+                    width: '100%',
+                    boxSizing: 'border-box',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '4px' }}>
                     <label style={{ fontSize: '0.78rem', color: otpVerified ? '#34D399' : '#CBD5E1', fontWeight: 700 }}>
                       Step 2: Match OTP Code
                     </label>
@@ -656,67 +632,73 @@ const AdminLoginPage = () => {
                     )}
                   </div>
 
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                  <div style={{ width: '100%', boxSizing: 'border-box', marginBottom: otpVerified ? 0 : '0.5rem' }}>
                     <input
                       type="text"
                       maxLength={6}
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                       disabled={otpVerified}
-                      placeholder="6-digit OTP"
+                      placeholder="Enter 6-digit OTP"
                       style={{
-                        flex: 1,
-                        padding: '0.65rem 0.85rem',
+                        width: '100%',
+                        boxSizing: 'border-box',
+                        padding: '0.7rem 0.85rem',
                         backgroundColor: '#1E293B',
                         border: '1px solid #475569',
                         borderRadius: '8px',
                         color: '#FFFFFF',
-                        fontSize: '1rem',
+                        fontSize: '1.05rem',
                         fontWeight: 800,
-                        letterSpacing: '4px',
+                        letterSpacing: '5px',
                         textAlign: 'center',
                         fontFamily: 'monospace',
                         outline: 'none',
                         opacity: otpVerified ? 0.7 : 1,
                       }}
                     />
-                    {!otpVerified && (
-                      <button
-                        type="button"
-                        onClick={handleVerifyOtp}
-                        disabled={verifyLoading || otpCode.length !== 6}
-                        style={{
-                          backgroundColor: otpCode.length === 6 ? '#10B981' : '#334155',
-                          color: otpCode.length === 6 ? '#FFFFFF' : '#94A3B8',
-                          border: 'none',
-                          borderRadius: '8px',
-                          padding: '0.65rem 1rem',
-                          fontSize: '0.8rem',
-                          fontWeight: 700,
-                          cursor: otpCode.length === 6 ? 'pointer' : 'not-allowed',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {verifyLoading ? 'Matching...' : 'Match OTP'}
-                      </button>
-                    )}
                   </div>
+
+                  {!otpVerified && (
+                    <button
+                      type="button"
+                      onClick={handleVerifyOtp}
+                      disabled={verifyLoading || otpCode.length !== 6}
+                      style={{
+                        width: '100%',
+                        boxSizing: 'border-box',
+                        backgroundColor: otpCode.length === 6 ? '#10B981' : '#334155',
+                        color: otpCode.length === 6 ? '#FFFFFF' : '#94A3B8',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '0.7rem 1rem',
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        cursor: otpCode.length === 6 ? 'pointer' : 'not-allowed',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      {verifyLoading ? 'Matching OTP...' : 'Match & Verify OTP'}
+                    </button>
+                  )}
                 </div>
               )}
 
               {/* STEP 3: Enter New Password (GATED: Only visible once OTP is verified!) */}
               {otpVerified ? (
-                <form onSubmit={handleResetSubmit} style={{ marginTop: '0.5rem' }}>
+                <form onSubmit={handleResetSubmit} style={{ marginTop: '0.5rem', width: '100%', boxSizing: 'border-box' }}>
                   <div
                     style={{
                       backgroundColor: 'rgba(16, 185, 129, 0.08)',
                       border: '1px solid rgba(16, 185, 129, 0.25)',
                       borderRadius: '10px',
-                      padding: '1rem',
-                      marginBottom: '1.25rem',
+                      padding: '0.9rem',
+                      marginBottom: '1rem',
+                      width: '100%',
+                      boxSizing: 'border-box',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.85rem' }}>
@@ -726,11 +708,11 @@ const AdminLoginPage = () => {
                       </span>
                     </div>
 
-                    <div style={{ marginBottom: '0.85rem' }}>
+                    <div style={{ marginBottom: '0.85rem', width: '100%', boxSizing: 'border-box' }}>
                       <label style={{ display: 'block', fontSize: '0.78rem', color: '#94A3B8', fontWeight: 600, marginBottom: '4px' }}>
                         Set New Password
                       </label>
-                      <div style={{ position: 'relative' }}>
+                      <div style={{ position: 'relative', width: '100%', boxSizing: 'border-box' }}>
                         <input
                           type={showForgotNewPass ? 'text' : 'password'}
                           value={forgotNewPassword}
@@ -739,6 +721,7 @@ const AdminLoginPage = () => {
                           required
                           style={{
                             width: '100%',
+                            boxSizing: 'border-box',
                             padding: '0.65rem 2.4rem 0.65rem 0.85rem',
                             backgroundColor: '#0F172A',
                             border: '1px solid #334155',
@@ -767,7 +750,7 @@ const AdminLoginPage = () => {
                       </div>
                     </div>
 
-                    <div>
+                    <div style={{ width: '100%', boxSizing: 'border-box' }}>
                       <label style={{ display: 'block', fontSize: '0.78rem', color: '#94A3B8', fontWeight: 600, marginBottom: '4px' }}>
                         Confirm New Password
                       </label>
@@ -779,6 +762,7 @@ const AdminLoginPage = () => {
                         required
                         style={{
                           width: '100%',
+                          boxSizing: 'border-box',
                           padding: '0.65rem 0.85rem',
                           backgroundColor: '#0F172A',
                           border: '1px solid #334155',
@@ -790,13 +774,13 @@ const AdminLoginPage = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                  <div style={{ display: 'flex', gap: '8px', width: '100%', boxSizing: 'border-box' }}>
                     <button
                       type="button"
                       onClick={handleCloseForgotModal}
                       style={{
                         flex: 1,
-                        padding: '0.75rem',
+                        padding: '0.7rem',
                         borderRadius: '8px',
                         backgroundColor: 'transparent',
                         border: '1px solid #334155',
@@ -804,6 +788,7 @@ const AdminLoginPage = () => {
                         fontSize: '0.82rem',
                         fontWeight: 700,
                         cursor: 'pointer',
+                        boxSizing: 'border-box',
                       }}
                     >
                       Cancel
@@ -814,10 +799,11 @@ const AdminLoginPage = () => {
                       className="admin-btn admin-btn-primary"
                       style={{
                         flex: 1.6,
-                        padding: '0.75rem',
+                        padding: '0.7rem',
                         borderRadius: '8px',
                         fontSize: '0.85rem',
                         fontWeight: 700,
+                        boxSizing: 'border-box',
                       }}
                     >
                       {forgotLoading ? 'Saving...' : 'Save New Password'}
@@ -825,12 +811,13 @@ const AdminLoginPage = () => {
                   </div>
                 </form>
               ) : (
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+                <div style={{ width: '100%', marginTop: '0.85rem', boxSizing: 'border-box' }}>
                   <button
                     type="button"
                     onClick={handleCloseForgotModal}
                     style={{
-                      padding: '0.65rem 1.25rem',
+                      width: '100%',
+                      padding: '0.65rem',
                       borderRadius: '8px',
                       backgroundColor: 'transparent',
                       border: '1px solid #334155',
@@ -838,6 +825,7 @@ const AdminLoginPage = () => {
                       fontSize: '0.82rem',
                       fontWeight: 700,
                       cursor: 'pointer',
+                      boxSizing: 'border-box',
                     }}
                   >
                     Cancel
