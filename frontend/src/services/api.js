@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+const rawBaseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const isApiInBase = rawBaseUrl.endsWith('/api');
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '',
+  baseURL: rawBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,9 +13,16 @@ const api = axios.create({
 // Attach JWT token from localStorage to every outgoing request and normalize /api prefix
 api.interceptors.request.use(
   (config) => {
-    // Automatically prefix with /api if not already prefixed and not an absolute URL
-    if (config.url && !config.url.startsWith('/api') && !config.url.startsWith('http')) {
-      config.url = `/api${config.url.startsWith('/') ? '' : '/'}${config.url}`;
+    if (config.url && !config.url.startsWith('http')) {
+      if (isApiInBase) {
+        if (config.url.startsWith('/api/')) {
+          config.url = config.url.replace(/^\/api/, '');
+        } else if (config.url === '/api') {
+          config.url = '/';
+        }
+      } else if (!config.url.startsWith('/api')) {
+        config.url = `/api${config.url.startsWith('/') ? '' : '/'}${config.url}`;
+      }
     }
 
     const token = localStorage.getItem('spicegarden_token');
