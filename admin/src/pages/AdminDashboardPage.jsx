@@ -502,7 +502,15 @@ const AdminDashboardPage = () => {
       )}
 
       {/* 1. Executive Hero Financial Spotlight & Shift Overview */}
-      <div className="dashboard-hero-revenue-card" style={{ padding: '1.2rem 1.4rem', marginBottom: '1.15rem' }}>
+      <div
+        className="dashboard-hero-revenue-card"
+        onClick={() => {
+          const elem = document.getElementById('orders-stream-section');
+          if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+        }}
+        style={{ padding: '1.2rem 1.4rem', marginBottom: '1.15rem', cursor: 'pointer' }}
+        title="Click to view Live Kitchen Orders Stream"
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
@@ -942,6 +950,7 @@ const AdminDashboardPage = () => {
             {displayTopDishes.map((dish, idx) => (
               <div
                 key={dish._id || idx}
+                className="dashboard-leaderboard-item"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -950,7 +959,7 @@ const AdminDashboardPage = () => {
                   borderRadius: '10px',
                   backgroundColor: idx === 0 ? '#FFFBEB' : '#F8FAFC',
                   border: idx === 0 ? '1px solid #FDE68A' : '1px solid #E2E8F0',
-                  transition: 'transform 0.15s ease',
+                  cursor: 'pointer',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, flex: 1 }}>
@@ -1034,7 +1043,7 @@ const AdminDashboardPage = () => {
               { label: 'Beverages & Coolers', count: 9, percent: 15, color: '#0D9488' },
               { label: 'Desserts & Sweets', count: 8, percent: 13, color: '#9333EA' },
             ].map((cat) => (
-              <div key={cat.label}>
+              <div key={cat.label} className="dashboard-category-item" style={{ cursor: 'pointer' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '3px' }}>
                   <span style={{ fontWeight: 700, color: '#334155' }}>{cat.label}</span>
                   <span style={{ fontWeight: 800, color: '#0F172A', fontSize: '0.78rem' }}>
@@ -1049,6 +1058,7 @@ const AdminDashboardPage = () => {
           </div>
 
           <div
+            className="dashboard-catalog-readiness"
             style={{
               marginTop: '0.9rem',
               padding: '0.6rem 0.85rem',
@@ -1058,6 +1068,7 @@ const AdminDashboardPage = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              cursor: 'pointer',
             }}
           >
             <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>Catalog Readiness</span>
@@ -1189,7 +1200,13 @@ const AdminDashboardPage = () => {
               const isUpdating = updatingOrderId === ord._id;
 
               return (
-                <div key={ord._id} className="dashboard-order-card">
+                <div
+                  key={ord._id}
+                  className="dashboard-order-card"
+                  onClick={() => setSelectedOrder(ord)}
+                  style={{ cursor: 'pointer' }}
+                  title="Click to view order breakdown"
+                >
                   {/* Card Header: Order ID & Time + Status */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -1274,7 +1291,7 @@ const AdminDashboardPage = () => {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }} onClick={(e) => e.stopPropagation()}>
                       {ord.orderStatus === 'Order Placed' ? (
                         <button
                           onClick={() => handleAdvanceStatus(ord._id, ord.orderStatus)}
