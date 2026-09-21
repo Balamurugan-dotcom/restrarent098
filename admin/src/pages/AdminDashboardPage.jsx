@@ -683,9 +683,6 @@ const AdminDashboardPage = () => {
             <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#92400E' }}>
               {stats?.ordersByStatus?.placed ?? stats?.pendingOrders ?? 0}
             </div>
-            <p style={{ fontSize: '0.75rem', color: '#B45309', marginTop: '0.25rem' }}>
-              Fresh diner submissions awaiting kitchen acceptance
-            </p>
           </div>
 
           {/* Stage 2: In Preparation */}
@@ -709,9 +706,6 @@ const AdminDashboardPage = () => {
             <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#1E3A8A' }}>
               {stats?.ordersByStatus?.preparing ?? stats?.preparingOrders ?? 0}
             </div>
-            <p style={{ fontSize: '0.75rem', color: '#1E40AF', marginTop: '0.25rem' }}>
-              Chef currently simmering gravies & dum cooking
-            </p>
           </div>
 
           {/* Stage 3: Out for Delivery */}
@@ -735,9 +729,6 @@ const AdminDashboardPage = () => {
             <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#581C87' }}>
               {stats?.ordersByStatus?.outForDelivery ?? stats?.outForDeliveryOrders ?? 0}
             </div>
-            <p style={{ fontSize: '0.75rem', color: '#6B21A8', marginTop: '0.25rem' }}>
-              Rider dispatched with thermal hot-bags across Bangalore
-            </p>
           </div>
 
           {/* Stage 4: Delivered / Fulfilled */}
@@ -761,9 +752,6 @@ const AdminDashboardPage = () => {
             <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#064E3B' }}>
               {stats?.ordersByStatus?.delivered ?? stats?.deliveredOrders ?? 0}
             </div>
-            <p style={{ fontSize: '0.75rem', color: '#065F46', marginTop: '0.25rem' }}>
-              Handed over to customer with payment completed
-            </p>
           </div>
         </div>
       </div>
