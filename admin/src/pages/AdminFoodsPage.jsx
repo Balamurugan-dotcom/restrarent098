@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import adminApi from '../api/adminApi';
 import {
   Plus,
@@ -30,7 +30,11 @@ import {
   ExternalLink,
   SlidersHorizontal,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Camera,
+  Upload,
+  FolderOpen,
+  Image as ImageIcon
 } from 'lucide-react';
 
 const AdminFoodsPage = () => {
@@ -81,6 +85,114 @@ const AdminFoodsPage = () => {
     isPopular: false,
     isAvailable: true,
   });
+
+  // Camera & Image Upload States and Refs
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState('');
+  const [imageInputMode, setImageInputMode] = useState('browse'); // 'browse' | 'camera' | 'url'
+  const videoRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const mobileCameraInputRef = useRef(null);
+
+  // Stop live camera tracks and release webcam/camera hardware
+  const stopLiveCamera = () => {
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+    setIsCameraActive(false);
+  };
+
+  // Ensure webcam hardware is stopped on unmount
+  useEffect(() => {
+    return () => {
+      stopLiveCamera();
+    };
+  }, []);
+
+  // Process image from File or Blob into an optimized crisp data URL
+  const processAndSetImage = (fileOrBlob, sourceLabel = 'File') => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const maxDim = 1000;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        setFormData((prev) => ({ ...prev, image: dataUrl }));
+        showToast(`Image loaded from ${sourceLabel} successfully!`, 'success');
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(fileOrBlob);
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (JPG, PNG, WebP).', 'error');
+      return;
+    }
+    processAndSetImage(file, 'Browse');
+    e.target.value = '';
+  };
+
+  const startLiveCamera = async () => {
+    setCameraError('');
+    setIsCameraActive(true);
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera API not available in this browser.');
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      mediaStreamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play().catch((err) => console.warn('Video play warning:', err));
+      }
+    } catch (err) {
+      console.warn('Live camera error:', err);
+      setCameraError('Live webcam unavailable or permission denied. Opening device camera picker...');
+      setIsCameraActive(false);
+      if (mobileCameraInputRef.current) {
+        mobileCameraInputRef.current.click();
+      }
+    }
+  };
+
+  const captureLivePhoto = () => {
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+    setFormData((prev) => ({ ...prev, image: dataUrl }));
+    stopLiveCamera();
+    showToast('Photo captured from camera successfully!', 'success');
+  };
 
   useEffect(() => {
     fetchFoodsAndCategories();
@@ -208,6 +320,9 @@ const AdminFoodsPage = () => {
   };
 
   const handleOpenAddModal = () => {
+    stopLiveCamera();
+    setCameraError('');
+    setImageInputMode('browse');
     setEditingFood(null);
     setFormData({
       name: '',
@@ -226,6 +341,9 @@ const AdminFoodsPage = () => {
   };
 
   const handleOpenEditModal = (food) => {
+    stopLiveCamera();
+    setCameraError('');
+    setImageInputMode('browse');
     setEditingFood(food);
     setFormData({
       name: food.name,
@@ -1974,7 +2092,10 @@ const AdminFoodsPage = () => {
                 </p>
               </div>
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => {
+                  stopLiveCamera();
+                  setIsModalOpen(false);
+                }}
                 style={{
                   width: '32px',
                   height: '32px',
@@ -2154,29 +2275,322 @@ const AdminFoodsPage = () => {
                 </div>
               </div>
 
-              <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.35rem' }}>
-                  Image URL / Asset Path *
-                </label>
-                <input
-                  type="text"
-                  className="admin-input"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="/images/foods/hyderabadi-dum-chicken-biryani.jpg"
-                  required
-                />
-                {formData.image && (
-                  <div style={{ marginTop: '0.65rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <img
-                      src={getImageUrl(formData.image)}
-                      alt="Preview"
-                      style={{ width: '48px', height: '48px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #CBD5E1' }}
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80';
+              {/* Image Selection: Browse from Computer / Device, Camera Capture, or URL */}
+              <div style={{ marginBottom: '1.5rem', backgroundColor: '#F8FAFC', padding: '1rem', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <label style={{ fontSize: '0.82rem', fontWeight: 700, color: '#334155', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <ImageIcon size={15} color="#059669" />
+                    Dish Image *
+                  </label>
+                  
+                  {/* Mode toggles */}
+                  <div style={{ display: 'inline-flex', gap: '4px', backgroundColor: '#F1F5F9', padding: '3px', borderRadius: '8px' }}>
+                    <button
+                      type="button"
+                      onClick={() => { stopLiveCamera(); setImageInputMode('browse'); }}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        backgroundColor: imageInputMode === 'browse' ? '#FFFFFF' : 'transparent',
+                        color: imageInputMode === 'browse' ? '#0F172A' : '#64748B',
+                        boxShadow: imageInputMode === 'browse' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
                       }}
-                    />
-                    <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Live image thumbnail preview</span>
+                    >
+                      <FolderOpen size={12} /> Browse
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setImageInputMode('camera'); startLiveCamera(); }}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        backgroundColor: imageInputMode === 'camera' ? '#FFFFFF' : 'transparent',
+                        color: imageInputMode === 'camera' ? '#0F172A' : '#64748B',
+                        boxShadow: imageInputMode === 'camera' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <Camera size={12} /> Camera
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { stopLiveCamera(); setImageInputMode('url'); }}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        borderRadius: '6px',
+                        border: 'none',
+                        cursor: 'pointer',
+                        backgroundColor: imageInputMode === 'url' ? '#FFFFFF' : 'transparent',
+                        color: imageInputMode === 'url' ? '#0F172A' : '#64748B',
+                        boxShadow: imageInputMode === 'url' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <ExternalLink size={12} /> URL / Path
+                    </button>
+                  </div>
+                </div>
+
+                {/* Hidden native inputs for browsing and mobile camera capture */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  style={{ display: 'none' }}
+                />
+                <input
+                  type="file"
+                  ref={mobileCameraInputRef}
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleFileSelect}
+                  style={{ display: 'none' }}
+                />
+
+                {/* Primary Action Buttons Bar */}
+                <div style={{ display: 'flex', gap: '0.65rem', marginBottom: '0.85rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      stopLiveCamera();
+                      setImageInputMode('browse');
+                      if (fileInputRef.current) fileInputRef.current.click();
+                    }}
+                    style={{
+                      flex: '1 1 140px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '7px',
+                      padding: '8px 14px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      color: '#1E293B',
+                      backgroundColor: '#FFFFFF',
+                      border: '1.5px dashed #CBD5E1',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <Upload size={15} color="#059669" />
+                    Upload from Browse
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageInputMode('camera');
+                      startLiveCamera();
+                    }}
+                    style={{
+                      flex: '1 1 140px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '7px',
+                      padding: '8px 14px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      color: '#1E293B',
+                      backgroundColor: isCameraActive ? '#FEF3C7' : '#FFFFFF',
+                      border: isCameraActive ? '1.5px solid #F59E0B' : '1.5px dashed #CBD5E1',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <Camera size={15} color="#D97706" />
+                    {isCameraActive ? 'Camera Active' : 'Take Photo (Camera)'}
+                  </button>
+                </div>
+
+                {/* Live Camera Viewfinder Modal / Card */}
+                {isCameraActive && (
+                  <div style={{
+                    position: 'relative',
+                    marginBottom: '1rem',
+                    backgroundColor: '#0F172A',
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    padding: '0.75rem',
+                    border: '2px solid #F59E0B',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <span style={{ color: '#F8FAFC', fontSize: '0.75rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#EF4444', display: 'inline-block' }} />
+                        Live Camera Viewfinder
+                      </span>
+                      <button
+                        type="button"
+                        onClick={stopLiveCamera}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#94A3B8',
+                          cursor: 'pointer',
+                          padding: '2px 6px',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                        }}
+                      >
+                        ✕ Close
+                      </button>
+                    </div>
+
+                    <div style={{ position: 'relative', width: '100%', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#000000', minHeight: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        style={{ width: '100%', maxHeight: '260px', objectFit: 'contain' }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                      <button
+                        type="button"
+                        onClick={captureLivePhoto}
+                        style={{
+                          flex: 1,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          padding: '8px 12px',
+                          backgroundColor: '#059669',
+                          color: '#FFFFFF',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '0.82rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          boxShadow: '0 2px 6px rgba(5, 150, 105, 0.3)'
+                        }}
+                      >
+                        <Camera size={16} /> Snap Photo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={stopLiveCamera}
+                        style={{
+                          padding: '8px 12px',
+                          backgroundColor: '#334155',
+                          color: '#F1F5F9',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {cameraError && (
+                  <div style={{ marginBottom: '0.75rem', padding: '0.5rem 0.75rem', backgroundColor: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', fontSize: '0.75rem', color: '#DC2626' }}>
+                    {cameraError}
+                  </div>
+                )}
+
+                {/* Image URL / Asset Path Input */}
+                <div style={{ marginTop: '0.5rem' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 600, color: '#64748B', display: 'block', marginBottom: '3px' }}>
+                    Image URL / Asset Path:
+                  </span>
+                  <input
+                    type="text"
+                    className="admin-input"
+                    value={formData.image.startsWith('data:') ? '✅ Captured/Uploaded Image (Optimized Base64)' : formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="/images/foods/hyderabadi-dum-chicken-biryani.jpg or https://..."
+                    required
+                    style={{ fontSize: '0.82rem', padding: '0.5rem 0.75rem' }}
+                  />
+                </div>
+
+                {/* Preview Thumbnail Card with Details and Clear option */}
+                {formData.image && (
+                  <div style={{
+                    marginTop: '0.75rem',
+                    padding: '0.65rem 0.85rem',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '8px',
+                    border: '1px solid #E2E8F0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '0.75rem'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <img
+                        src={getImageUrl(formData.image)}
+                        alt="Preview"
+                        style={{ width: '48px', height: '48px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #CBD5E1', flexShrink: 0 }}
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80';
+                        }}
+                      />
+                      <div>
+                        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <span>Image Ready</span>
+                          {formData.image.startsWith('data:') ? (
+                            <span style={{ fontSize: '0.65rem', backgroundColor: '#ECFDF5', color: '#059669', padding: '1px 6px', borderRadius: '4px', fontWeight: 800 }}>
+                              Custom Upload / Camera
+                            </span>
+                          ) : (
+                            <span style={{ fontSize: '0.65rem', backgroundColor: '#F1F5F9', color: '#475569', padding: '1px 6px', borderRadius: '4px', fontWeight: 800 }}>
+                              Asset Path / URL
+                            </span>
+                          )}
+                        </div>
+                        <span style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {formData.image.startsWith('data:') ? 'Optimized image ready to save' : formData.image}
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, image: '' })}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        color: '#EF4444',
+                        backgroundColor: '#FEF2F2',
+                        border: '1px solid #FCA5A5',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap'
+                      }}
+                      title="Clear image"
+                    >
+                      Clear
+                    </button>
                   </div>
                 )}
               </div>
@@ -2184,7 +2598,10 @@ const AdminFoodsPage = () => {
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderTop: '1px solid #E2E8F0', paddingTop: '1.25rem' }}>
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => {
+                    stopLiveCamera();
+                    setIsModalOpen(false);
+                  }}
                   className="admin-btn admin-btn-secondary"
                 >
                   Cancel
