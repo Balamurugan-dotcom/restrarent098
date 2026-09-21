@@ -748,7 +748,7 @@ button {
   }
 
   .admin-main-container {
-    padding: 1.15rem 1rem !important;
+    padding: 1.15rem 1rem 90px 1rem !important;
   }
 
   .admin-table-container {
@@ -767,7 +767,7 @@ button {
   }
 
   .admin-main-container {
-    padding: 1rem 0.75rem !important;
+    padding: 1rem 0.75rem 100px 0.75rem !important;
   }
 
   .admin-table th,

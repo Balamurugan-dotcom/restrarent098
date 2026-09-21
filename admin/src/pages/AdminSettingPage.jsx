@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAdminAuth } from '../context/AdminAuthContext';
+import adminApi from '../api/adminApi';
 import {
   Settings,
   Store,
@@ -97,7 +98,7 @@ const AdminSettingPage = () => {
     setTimeout(() => setSavedSuccess(false), 3000);
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = async (e) => {
     e.preventDefault();
     setPasswordError('');
     setPasswordSuccess(false);
@@ -112,10 +113,16 @@ const AdminSettingPage = () => {
       return;
     }
 
-    // Success simulation
-    setPasswordSuccess(true);
-    setPasswordState({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    setTimeout(() => setPasswordSuccess(false), 3500);
+    try {
+      await adminApi.put('/auth/profile', {
+        password: passwordState.newPassword,
+      });
+      setPasswordSuccess(true);
+      setPasswordState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setTimeout(() => setPasswordSuccess(false), 3500);
+    } catch (err) {
+      setPasswordError(err.response?.data?.message || 'Failed to update admin password.');
+    }
   };
 
   return (
