@@ -434,9 +434,6 @@ const AdminDashboardPage = () => {
               Live Kitchen
             </span>
           </div>
-          <p style={{ color: '#64748B', fontSize: '0.82rem', margin: '0.25rem 0 0 0' }}>
-            Spice Garden Bangalore • Indiranagar 100 Feet Road
-          </p>
         </div>
       </div>
 
@@ -488,9 +485,6 @@ const AdminDashboardPage = () => {
             <div style={{ fontSize: '2.3rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
               ₹{(stats?.totalSales ?? stats?.totalRevenue ?? 0).toLocaleString('en-IN')}
             </div>
-            <p style={{ fontSize: '0.78rem', color: '#94A3B8', margin: '4px 0 0 0' }}>
-              Lifetime Gross Sales Across Online Dine & Delivery Channels
-            </p>
           </div>
         </div>
 
@@ -654,9 +648,6 @@ const AdminDashboardPage = () => {
                 4 Sequential Stages
               </span>
             </div>
-            <p style={{ fontSize: '0.84rem', color: '#64748B', marginTop: '0.2rem' }}>
-              Visual order lifecycle monitoring: track kitchen prep times, rider handoffs, and fulfillment.
-            </p>
           </div>
 
           <Link
@@ -958,9 +949,6 @@ const AdminDashboardPage = () => {
                 1-Click Direct Actions
               </span>
             </div>
-            <p style={{ fontSize: '0.84rem', color: '#64748B', marginTop: '0.2rem' }}>
-              Advance orders through kitchen preparation without leaving this operations screen.
-            </p>
           </div>
 
           {/* Filter Pills */}
