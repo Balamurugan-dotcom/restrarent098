@@ -74,6 +74,26 @@ const Navbar = () => {
                 My Orders
               </NavLink>
             )}
+            <NavLink to="/cart" onClick={() => setMobileOpen(false)} className="mobile-drawer-cart-link">
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <ShoppingBag size={16} /> My Cart
+              </span>
+              {totalCount > 0 && (
+                <span
+                  style={{
+                    background: '#E65100',
+                    color: '#FFFFFF',
+                    fontSize: '0.72rem',
+                    fontWeight: 800,
+                    padding: '2px 8px',
+                    borderRadius: '9999px',
+                    marginLeft: '8px',
+                  }}
+                >
+                  {totalCount}
+                </span>
+              )}
+            </NavLink>
             {isAdmin && (
               <NavLink
                 to="/admin"

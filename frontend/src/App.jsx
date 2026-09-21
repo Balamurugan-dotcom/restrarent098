@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import MobileFloatingCart from './components/common/MobileFloatingCart';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Customer Pages
@@ -44,6 +45,7 @@ const Layout = ({ children }) => {
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       {!isAdminRoute && <Navbar />}
       <main style={{ flex: 1 }}>{children}</main>
+      {!isAdminRoute && <MobileFloatingCart />}
       {!isAdminRoute && <Footer />}
     </div>
   );

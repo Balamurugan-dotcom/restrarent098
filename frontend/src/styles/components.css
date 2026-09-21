@@ -216,6 +216,10 @@
   color: var(--text-main);
 }
 
+.mobile-drawer-cart-link {
+  display: none !important;
+}
+
 @media (max-width: 900px) {
   .nav-links {
     display: none;
@@ -235,6 +239,12 @@
     box-shadow: var(--shadow-lg);
     border-bottom: 1px solid var(--border-color);
     gap: 1.25rem;
+  }
+  .nav-links.mobile-open .mobile-drawer-cart-link {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
   }
 }
 
@@ -2022,6 +2032,108 @@
   .auth-card {
     padding: 1.5rem 1.15rem !important;
     border-radius: 16px !important;
+  }
+}
+
+/* Mobile Web Application Floating Cart Bar */
+.mobile-floating-cart-wrap {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-floating-cart-wrap {
+    display: block;
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    pointer-events: none;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mobile-floating-cart-bar {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #E65100 0%, #D84315 100%);
+    color: #FFFFFF;
+    padding: 0.75rem 1.15rem;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px -4px rgba(230, 81, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .mobile-floating-cart-bar:active {
+    transform: scale(0.98);
+  }
+
+  .mobile-floating-cart-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .mobile-floating-cart-icon {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-floating-cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #FFFFFF;
+    color: #E65100;
+    font-size: 0.68rem;
+    font-weight: 900;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .mobile-floating-cart-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-floating-cart-count {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .mobile-floating-cart-amount {
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .mobile-floating-cart-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.45rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    white-space: nowrap;
   }
 }
 

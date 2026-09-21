@@ -11,6 +11,7 @@ const foodRoutes = require('./routes/foodRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const statsRoutes = require('./routes/statsRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 const Food = require('./models/Food');
 const importData = require('./seeder/seeder');
@@ -38,6 +39,7 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/cart', cartRoutes);
 app.use('/api/foods', foodRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);

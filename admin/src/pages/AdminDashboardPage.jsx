@@ -627,7 +627,7 @@ const AdminDashboardPage = () => {
       {/* Symmetrical 4-Card Operations Grid (2x2 on Mobile, 4x1 on Desktop) */}
       <div className="dashboard-kpi-grid">
         {/* Card 1: Total Orders */}
-        <Link to="/orders" className="admin-card kpi-card">
+        <Link to="/orders" className="admin-card kpi-card kpi-card-blue">
           <div className="kpi-card-header">
             <div>
               <span className="kpi-card-label">Total Orders</span>
@@ -650,7 +650,7 @@ const AdminDashboardPage = () => {
         </Link>
 
         {/* Card 2: Active Kitchen Workload */}
-        <a href="#pipeline-section" className="admin-card kpi-card" style={{ textDecoration: 'none' }}>
+        <a href="#pipeline-section" className="admin-card kpi-card kpi-card-amber" style={{ textDecoration: 'none' }}>
           <div className="kpi-card-header">
             <div>
               <span className="kpi-card-label">Active in Kitchen</span>
@@ -673,7 +673,7 @@ const AdminDashboardPage = () => {
         </a>
 
         {/* Card 3: Menu Catalog */}
-        <Link to="/menu" className="admin-card kpi-card">
+        <Link to="/menu" className="admin-card kpi-card kpi-card-purple">
           <div className="kpi-card-header">
             <div>
               <span className="kpi-card-label">Menu Catalog</span>
@@ -696,7 +696,7 @@ const AdminDashboardPage = () => {
         </Link>
 
         {/* Card 4: Registered Diners */}
-        <Link to="/customers" className="admin-card kpi-card">
+        <Link to="/customers" className="admin-card kpi-card kpi-card-indigo">
           <div className="kpi-card-header">
             <div>
               <span className="kpi-card-label">Diner Accounts</span>
@@ -720,7 +720,7 @@ const AdminDashboardPage = () => {
       </div>
 
       {/* 2. Interactive 4-Stage Kitchen Pipeline Tracker */}
-      <div id="pipeline-section" className="admin-card" style={{ padding: '1.25rem 1.35rem', marginBottom: '1.15rem', borderRadius: '16px' }}>
+      <div id="pipeline-section" className="admin-card dashboard-pipeline-container" style={{ padding: '1.25rem 1.35rem', marginBottom: '1.15rem', borderRadius: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
             <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
@@ -782,7 +782,7 @@ const AdminDashboardPage = () => {
               const el = document.getElementById('orders-stream-section');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className={`pipeline-stage-card ${stageFilter === 'Order Placed' ? 'is-active' : ''}`}
+            className={`pipeline-stage-card pipeline-stage-placed ${stageFilter === 'Order Placed' ? 'is-active' : ''}`}
             style={{
               backgroundColor: '#FFFBEB',
               border: stageFilter === 'Order Placed' ? '2px solid #D97706' : '1px solid #FDE68A',
@@ -819,7 +819,7 @@ const AdminDashboardPage = () => {
               const el = document.getElementById('orders-stream-section');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className={`pipeline-stage-card ${stageFilter === 'Preparing' ? 'is-active' : ''}`}
+            className={`pipeline-stage-card pipeline-stage-preparing ${stageFilter === 'Preparing' ? 'is-active' : ''}`}
             style={{
               backgroundColor: '#EFF6FF',
               border: stageFilter === 'Preparing' ? '2px solid #2563EB' : '1px solid #BFDBFE',
@@ -856,7 +856,7 @@ const AdminDashboardPage = () => {
               const el = document.getElementById('orders-stream-section');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className={`pipeline-stage-card ${stageFilter === 'Out for Delivery' ? 'is-active' : ''}`}
+            className={`pipeline-stage-card pipeline-stage-delivery ${stageFilter === 'Out for Delivery' ? 'is-active' : ''}`}
             style={{
               backgroundColor: '#FAF5FF',
               border: stageFilter === 'Out for Delivery' ? '2px solid #7C3AED' : '1px solid #E9D5FF',
@@ -893,7 +893,7 @@ const AdminDashboardPage = () => {
               const el = document.getElementById('orders-stream-section');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className={`pipeline-stage-card ${stageFilter === 'Delivered' ? 'is-active' : ''}`}
+            className={`pipeline-stage-card pipeline-stage-fulfilled ${stageFilter === 'Delivered' ? 'is-active' : ''}`}
             style={{
               backgroundColor: '#ECFDF5',
               border: stageFilter === 'Delivered' ? '2px solid #059669' : '1px solid #A7F3D0',
@@ -935,7 +935,7 @@ const AdminDashboardPage = () => {
         }}
       >
         {/* Left: Top-Selling Culinary Leaderboard */}
-        <div className="admin-card" style={{ padding: '1.25rem 1.35rem', borderRadius: '16px' }}>
+        <div className="admin-card dashboard-leaderboard-container" style={{ padding: '1.25rem 1.35rem', borderRadius: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Award size={17} color="#D97706" />
@@ -958,7 +958,7 @@ const AdminDashboardPage = () => {
                   padding: '0.65rem 0.85rem',
                   borderRadius: '10px',
                   backgroundColor: idx === 0 ? '#FFFBEB' : '#F8FAFC',
-                  border: idx === 0 ? '1px solid #FDE68A' : '1px solid #E2E8F0',
+                  border: idx === 0 ? '1.5px solid #F59E0B' : idx === 1 ? '1.5px solid #94A3B8' : idx === 2 ? '1.5px solid #D97706' : '1.5px solid #CBD5E1',
                   cursor: 'pointer',
                 }}
               >
@@ -1021,7 +1021,7 @@ const AdminDashboardPage = () => {
         </div>
 
         {/* Right: Category Distribution & Inventory Readiness */}
-        <div className="admin-card" style={{ padding: '1.25rem 1.35rem', borderRadius: '16px' }}>
+        <div className="admin-card dashboard-category-container" style={{ padding: '1.25rem 1.35rem', borderRadius: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <PieChart size={17} color="#4F46E5" />
@@ -1064,7 +1064,7 @@ const AdminDashboardPage = () => {
               padding: '0.6rem 0.85rem',
               borderRadius: '10px',
               backgroundColor: '#F8FAFC',
-              border: '1px solid #E2E8F0',
+              border: '1.5px solid #10B981',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -1080,7 +1080,7 @@ const AdminDashboardPage = () => {
       </div>
 
       {/* 4. Live Kitchen Orders Stream Redesigned as Responsive Clean Cards */}
-      <div id="orders-stream-section" className="admin-card" style={{ padding: '1.25rem 1.35rem', borderRadius: '16px' }}>
+      <div id="orders-stream-section" className="admin-card dashboard-orders-container" style={{ padding: '1.25rem 1.35rem', borderRadius: '16px' }}>
         <div
           style={{
             display: 'flex',
@@ -1198,11 +1198,19 @@ const AdminDashboardPage = () => {
               const itemsSummary = itemsList.map((i) => `${i.quantity ? `${i.quantity}x ` : ''}${i.name}`).join(', ');
               const customerName = ord.customerDetails?.name || ord.user?.name || 'Diner';
               const isUpdating = updatingOrderId === ord._id;
+              const statusClass =
+                ord.orderStatus === 'Order Placed'
+                  ? 'order-card-placed'
+                  : ord.orderStatus === 'Preparing'
+                  ? 'order-card-preparing'
+                  : ord.orderStatus === 'Out for Delivery'
+                  ? 'order-card-delivery'
+                  : 'order-card-delivered';
 
               return (
                 <div
                   key={ord._id}
-                  className="dashboard-order-card"
+                  className={`dashboard-order-card ${statusClass}`}
                   onClick={() => setSelectedOrder(ord)}
                   style={{ cursor: 'pointer' }}
                   title="Click to view order breakdown"

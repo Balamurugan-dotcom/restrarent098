@@ -42,6 +42,20 @@ const userSchema = new mongoose.Schema(
       city: { type: String, default: 'Bangalore' },
       pincode: { type: String, default: '560038' },
     },
+    cart: [
+      {
+        food: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Food',
+        },
+        name: { type: String, default: '' },
+        price: { type: Number, default: 0 },
+        image: { type: String, default: '' },
+        category: { type: String, default: '' },
+        isVeg: { type: Boolean, default: true },
+        quantity: { type: Number, default: 1, min: 1 },
+      },
+    ],
   },
   {
     timestamps: true,
