@@ -486,7 +486,7 @@ const AdminDashboardPage = () => {
 
           {/* Compact Sales / Orders Trend Visualization (Real MongoDB data only) */}
           {stats?.recentOrders && stats.recentOrders.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+            <div className="dashboard-recent-activity-chart" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
               <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Recent Order Activity ({stats.recentOrders.length})
               </span>
