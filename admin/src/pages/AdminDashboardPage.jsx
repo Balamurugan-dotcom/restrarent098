@@ -438,18 +438,6 @@ const AdminDashboardPage = () => {
             Spice Garden Bangalore • Indiranagar 100 Feet Road
           </p>
         </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <button
-            onClick={() => fetchStats(false)}
-            disabled={refreshing}
-            className="admin-btn admin-btn-secondary"
-            style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem', borderRadius: '9px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-          >
-            <RefreshCw size={13} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
-            <span>Sync</span>
-          </button>
-        </div>
       </div>
 
       {error && (
@@ -503,30 +491,6 @@ const AdminDashboardPage = () => {
             <p style={{ fontSize: '0.78rem', color: '#94A3B8', margin: '4px 0 0 0' }}>
               Lifetime Gross Sales Across Online Dine & Delivery Channels
             </p>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button
-              onClick={() => fetchStats(false)}
-              disabled={refreshing}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '0.45rem 0.85rem',
-                borderRadius: '10px',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                fontSize: '0.76rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-              }}
-            >
-              <RefreshCw size={13} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
-              <span>{refreshing ? 'Syncing...' : 'Live Sync'}</span>
-            </button>
           </div>
         </div>
 
