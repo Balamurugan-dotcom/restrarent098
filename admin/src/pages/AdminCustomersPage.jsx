@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import adminApi from '../api/adminApi';
+import { useCountUp } from '../hooks/useCountUp';
 import {
   Users,
   Search,
@@ -15,7 +16,13 @@ import {
   ExternalLink,
   Sparkles,
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  X,
+  MessageSquare,
+  Clock,
+  CreditCard,
+  ChevronRight,
+  Award
 } from 'lucide-react';
 
 const AdminCustomersPage = () => {
@@ -24,6 +31,7 @@ const AdminCustomersPage = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [selectedDiner, setSelectedDiner] = useState(null);
 
   useEffect(() => {
     fetchCustomers();
@@ -42,6 +50,19 @@ const AdminCustomersPage = () => {
       setLoading(false);
       setRefreshing(false);
     }
+  };
+
+  // VIP Tier Classifier
+  const getVipTier = (diner) => {
+    const spent = diner.totalSpent || 0;
+    const count = diner.orderCount || 0;
+    if (spent >= 3000 || count >= 5) {
+      return { label: 'VIP Platinum', className: 'vip-badge-platinum' };
+    }
+    if (spent >= 1000 || count >= 2) {
+      return { label: 'VIP Gold', className: 'vip-badge-gold' };
+    }
+    return { label: 'Silver Diner', className: 'vip-badge-silver' };
   };
 
   // Filtered list
@@ -68,6 +89,11 @@ const AdminCustomersPage = () => {
   const totalDiners = customers.length;
   const activeDiners = customers.filter((c) => (c.orderCount || 0) > 0).length;
   const totalLTV = customers.reduce((sum, c) => sum + (c.totalSpent || 0), 0);
+
+  // Smooth Count-Up animations
+  const animatedTotalDiners = useCountUp(totalDiners, 800);
+  const animatedActiveDiners = useCountUp(activeDiners, 800);
+  const animatedTotalLTV = useCountUp(totalLTV, 800);
 
   const exportCSV = () => {
     const headers = 'Name,Email,Phone,Area,City,Pincode,Orders Placed,Total Spent (INR),Registered Date\n';
@@ -195,7 +221,7 @@ const AdminCustomersPage = () => {
           <div>
             <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>REGISTERED DINERS</div>
             <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0F172A', marginTop: '4px' }}>
-              {totalDiners}
+              {animatedTotalDiners}
             </div>
             <div style={{ fontSize: '0.74rem', color: '#10B981', fontWeight: 600, marginTop: '2px' }}>
               ● 100% Real Storefront Signups
@@ -231,7 +257,7 @@ const AdminCustomersPage = () => {
           <div>
             <div style={{ fontSize: '0.8rem', color: '#065F46', fontWeight: 600 }}>ACTIVE ORDERING DINERS</div>
             <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#059669', marginTop: '4px' }}>
-              {activeDiners}
+              {animatedActiveDiners}
             </div>
             <div style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 600, marginTop: '2px' }}>
               Placed 1+ authentic orders
@@ -267,7 +293,7 @@ const AdminCustomersPage = () => {
           <div>
             <div style={{ fontSize: '0.8rem', color: '#1E40AF', fontWeight: 600 }}>LIFETIME VALUE (LTV)</div>
             <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#2563EB', marginTop: '4px' }}>
-              ₹{totalLTV.toLocaleString('en-IN')}
+              ₹{animatedTotalLTV.toLocaleString('en-IN')}
             </div>
             <div style={{ fontSize: '0.74rem', color: '#2563EB', fontWeight: 600, marginTop: '2px' }}>
               Cumulative diner purchases
@@ -366,6 +392,9 @@ const AdminCustomersPage = () => {
                   DINER & PROFILE
                 </th>
                 <th style={{ padding: '0.85rem 1rem', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
+                  VIP TIER
+                </th>
+                <th style={{ padding: '0.85rem 1rem', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
                   CONTACT DETAILS
                 </th>
                 <th style={{ padding: '0.85rem 1rem', fontSize: '0.76rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
@@ -385,7 +414,7 @@ const AdminCustomersPage = () => {
             <tbody>
               {filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: '3.5rem', textAlign: 'center', color: '#64748B' }}>
+                  <td colSpan={7} style={{ padding: '3.5rem', textAlign: 'center', color: '#64748B' }}>
                     <Users size={36} color="#94A3B8" style={{ margin: '0 auto 0.5rem' }} />
                     <p style={{ fontWeight: 600, fontSize: '0.95rem', margin: 0 }}>No registered diners found.</p>
                     <p style={{ fontSize: '0.82rem', margin: '4px 0 0' }}>
@@ -394,126 +423,308 @@ const AdminCustomersPage = () => {
                   </td>
                 </tr>
               ) : (
-                filteredCustomers.map((diner) => (
-                  <tr
-                    key={diner._id}
-                    style={{
-                      borderBottom: '1px solid #F1F5F9',
-                      transition: 'background-color 0.15s ease',
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#FAFAFA')}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                  >
-                    {/* Diner & Profile */}
-                    <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <div
+                filteredCustomers.map((diner) => {
+                  const vip = getVipTier(diner);
+                  return (
+                    <tr
+                      key={diner._id}
+                      onClick={() => setSelectedDiner(diner)}
+                      style={{
+                        borderBottom: '1px solid #F1F5F9',
+                        transition: 'background-color 0.15s ease',
+                        cursor: 'pointer',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F8FAFC')}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                      title="Click to view detailed customer profile"
+                    >
+                      {/* Diner & Profile */}
+                      <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <div
+                            style={{
+                              width: '38px',
+                              height: '38px',
+                              borderRadius: '10px',
+                              backgroundColor: '#059669',
+                              color: '#FFFFFF',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontWeight: 800,
+                              fontSize: '0.95rem',
+                              flexShrink: 0,
+                            }}
+                          >
+                            {(diner.name || 'D').charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#0F172A' }}>
+                              {diner.name}
+                            </div>
+                            <div style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <CheckCircle2 size={11} /> Verified Customer
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* VIP Tier Badge */}
+                      <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                        <span className={vip.className}>
+                          {vip.label}
+                        </span>
+                      </td>
+
+                      {/* Contact Details */}
+                      <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                        <div style={{ fontSize: '0.84rem', color: '#0F172A', fontWeight: 600 }}>
+                          {diner.email}
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                          <Phone size={12} color="#059669" />
+                          <span>{diner.phone || 'Not provided'}</span>
+                        </div>
+                      </td>
+
+                      {/* Bangalore Delivery Address */}
+                      <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                        <div style={{ fontSize: '0.84rem', color: '#334155', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <MapPin size={13} color="#2563EB" />
+                          <span>{diner.address?.area || diner.address?.street || 'Indiranagar'}, Bangalore</span>
+                        </div>
+                        <div style={{ fontSize: '0.74rem', color: '#64748B', marginLeft: '17px' }}>
+                          PIN: {diner.address?.pincode || '560038'}
+                        </div>
+                      </td>
+
+                      {/* Orders Placed */}
+                      <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                        <span
                           style={{
-                            width: '38px',
-                            height: '38px',
-                            borderRadius: '10px',
-                            backgroundColor: '#059669',
-                            color: '#FFFFFF',
-                            display: 'flex',
+                            display: 'inline-flex',
                             alignItems: 'center',
-                            justifyContent: 'center',
-                            fontWeight: 800,
-                            fontSize: '0.95rem',
-                            flexShrink: 0,
+                            gap: '5px',
+                            padding: '3px 9px',
+                            borderRadius: '999px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            backgroundColor: (diner.orderCount || 0) > 0 ? '#ECFDF5' : '#F1F5F9',
+                            color: (diner.orderCount || 0) > 0 ? '#065F46' : '#64748B',
+                            border: `1px solid ${(diner.orderCount || 0) > 0 ? '#A7F3D0' : '#CBD5E1'}`,
                           }}
                         >
-                          {(diner.name || 'D').charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#0F172A' }}>
-                            {diner.name}
-                          </div>
-                          <div style={{ fontSize: '0.74rem', color: '#059669', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <CheckCircle2 size={11} /> Verified Customer
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Contact Details */}
-                    <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
-                      <div style={{ fontSize: '0.84rem', color: '#0F172A', fontWeight: 600 }}>
-                        {diner.email}
-                      </div>
-                      <div style={{ fontSize: '0.78rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                        <Phone size={12} color="#059669" />
-                        <span>{diner.phone || 'Not provided'}</span>
-                      </div>
-                    </td>
-
-                    {/* Bangalore Delivery Address */}
-                    <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
-                      <div style={{ fontSize: '0.84rem', color: '#334155', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <MapPin size={13} color="#2563EB" />
-                        <span>{diner.address?.area || diner.address?.street || 'Indiranagar'}, Bangalore</span>
-                      </div>
-                      <div style={{ fontSize: '0.74rem', color: '#64748B', marginLeft: '17px' }}>
-                        PIN: {diner.address?.pincode || '560038'}
-                      </div>
-                    </td>
-
-                    {/* Orders Placed */}
-                    <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          padding: '3px 9px',
-                          borderRadius: '999px',
-                          fontSize: '0.75rem',
-                          fontWeight: 700,
-                          backgroundColor: (diner.orderCount || 0) > 0 ? '#ECFDF5' : '#F1F5F9',
-                          color: (diner.orderCount || 0) > 0 ? '#065F46' : '#64748B',
-                          border: `1px solid ${(diner.orderCount || 0) > 0 ? '#A7F3D0' : '#CBD5E1'}`,
-                        }}
-                      >
-                        <ShoppingBag size={12} />
-                        <span>{diner.orderCount || 0} {diner.orderCount === 1 ? 'Order' : 'Orders'}</span>
-                      </span>
-                    </td>
-
-                    {/* Total Spent */}
-                    <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
-                      <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0F172A' }}>
-                        ₹{(diner.totalSpent || 0).toLocaleString('en-IN')}
-                      </div>
-                      <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                        Lifetime Value
-                      </div>
-                    </td>
-
-                    {/* Registered Date */}
-                    <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
-                      <div style={{ fontSize: '0.82rem', color: '#334155', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <Calendar size={13} color="#64748B" />
-                        <span>
-                          {new Date(diner.createdAt).toLocaleDateString('en-IN', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                          })}
+                          <ShoppingBag size={12} />
+                          <span>{diner.orderCount || 0} {diner.orderCount === 1 ? 'Order' : 'Orders'}</span>
                         </span>
-                      </div>
-                      <div style={{ fontSize: '0.72rem', color: '#64748B', marginLeft: '18px' }}>
-                        {new Date(diner.createdAt).toLocaleTimeString('en-IN', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+
+                      {/* Total Spent */}
+                      <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0F172A' }}>
+                          ₹{(diner.totalSpent || 0).toLocaleString('en-IN')}
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
+                          Lifetime Value
+                        </div>
+                      </td>
+
+                      {/* Registered Date */}
+                      <td style={{ padding: '0.85rem 1rem', verticalAlign: 'middle' }}>
+                        <div style={{ fontSize: '0.82rem', color: '#334155', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <Calendar size={13} color="#64748B" />
+                          <span>
+                            {new Date(diner.createdAt).toLocaleDateString('en-IN', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                            })}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748B', marginLeft: '18px' }}>
+                          {new Date(diner.createdAt).toLocaleTimeString('en-IN', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Customer Profile Slide-Over Drawer */}
+      {selectedDiner && (
+        <div className="customer-drawer-backdrop" onClick={() => setSelectedDiner(null)}>
+          <div className="customer-drawer-content" onClick={(e) => e.stopPropagation()}>
+            {/* Drawer Header */}
+            <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F8FAFC' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: '#059669', color: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.1rem' }}>
+                  {(selectedDiner.name || 'D').charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
+                    {selectedDiner.name}
+                  </h3>
+                  <span className={getVipTier(selectedDiner).className} style={{ marginTop: '3px', display: 'inline-block' }}>
+                    {getVipTier(selectedDiner).label}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedDiner(null)}
+                style={{ padding: '6px', borderRadius: '8px', background: '#FFFFFF', border: '1px solid #CBD5E1', cursor: 'pointer', color: '#64748B' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Drawer Body */}
+            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Financial Snapshot */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: '#F8FAFC', padding: '1rem', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+                <div>
+                  <div style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Lifetime Spend</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#059669', marginTop: '2px' }}>
+                    ₹{(selectedDiner.totalSpent || 0).toLocaleString('en-IN')}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.74rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' }}>Orders Count</div>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#0F172A', marginTop: '2px' }}>
+                    {selectedDiner.orderCount || 0}
+                  </div>
+                </div>
+              </div>
+
+              {/* Direct Actions */}
+              <div>
+                <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', marginBottom: '0.6rem' }}>
+                  Quick Contact & Actions
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  {selectedDiner.phone ? (
+                    <a
+                      href={`tel:${selectedDiner.phone}`}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        padding: '0.65rem',
+                        borderRadius: '8px',
+                        background: '#ECFDF5',
+                        color: '#065F46',
+                        border: '1px solid #A7F3D0',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <Phone size={14} />
+                      <span>Call Diner</span>
+                    </a>
+                  ) : (
+                    <button
+                      disabled
+                      style={{
+                        padding: '0.65rem',
+                        borderRadius: '8px',
+                        background: '#F1F5F9',
+                        color: '#94A3B8',
+                        border: '1px solid #E2E8F0',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                      }}
+                    >
+                      No Phone
+                    </button>
+                  )}
+
+                  <a
+                    href={`mailto:${selectedDiner.email}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      padding: '0.65rem',
+                      borderRadius: '8px',
+                      background: '#EFF6FF',
+                      color: '#1E40AF',
+                      border: '1px solid #BFDBFE',
+                      fontWeight: 700,
+                      fontSize: '0.82rem',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <Mail size={14} />
+                    <span>Send Email</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Bangalore Delivery Address */}
+              <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '0.5rem', color: '#0F172A', fontWeight: 800, fontSize: '0.86rem' }}>
+                  <MapPin size={15} color="#2563EB" />
+                  <span>Primary Bangalore Delivery Destination</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: '#334155', lineHeight: 1.4 }}>
+                  {selectedDiner.address?.street || '100 Feet Road'}, {selectedDiner.address?.area || 'Indiranagar'}
+                </p>
+                <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: '4px' }}>
+                  Bangalore, Karnataka • PIN: {selectedDiner.address?.pincode || '560038'}
+                </div>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((selectedDiner.address?.area || 'Indiranagar') + ' Bangalore')}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    fontSize: '0.76rem',
+                    color: '#2563EB',
+                    fontWeight: 700,
+                    marginTop: '0.65rem',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <span>Open in Google Maps</span>
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+
+              {/* Account Details */}
+              <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '1rem' }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', marginBottom: '0.6rem' }}>
+                  Account Metadata
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.82rem', color: '#475569' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>User Account ID:</span>
+                    <strong style={{ color: '#0F172A' }}>{selectedDiner._id}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Registered On:</span>
+                    <strong>{new Date(selectedDiner.createdAt).toLocaleString('en-IN')}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Authentication Mode:</span>
+                    <strong style={{ color: '#059669' }}>Storefront JWT Auth</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
