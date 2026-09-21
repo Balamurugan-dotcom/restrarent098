@@ -1693,6 +1693,10 @@
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
+  z-index: 50;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .modal-close-btn:hover {

@@ -28,12 +28,44 @@ const FoodDetailsModal = ({ food, onClose }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '640px', padding: '0' }}>
-        <button type="button" className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-          <X size={18} />
-        </button>
-
+      <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '640px', padding: '0', position: 'relative' }}>
         <div style={{ height: '260px', overflow: 'hidden', position: 'relative' }}>
+          {/* Floating Top-Right Circular 'X' Close Button */}
+          <button
+            type="button"
+            className="food-modal-close-btn"
+            onClick={onClose}
+            aria-label="Close modal"
+            style={{
+              position: 'absolute',
+              top: '14px',
+              right: '14px',
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.92)',
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.28)',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#0F172A',
+              zIndex: 30,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.08)';
+              e.currentTarget.style.backgroundColor = '#FFFFFF';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.92)';
+            }}
+          >
+            <X size={20} strokeWidth={2.5} color="#0F172A" />
+          </button>
           <img
             src={food.image}
             alt={food.name}
