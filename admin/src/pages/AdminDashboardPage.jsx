@@ -439,46 +439,7 @@ const AdminDashboardPage = () => {
           </span>
         </div>
 
-        {/* Small "Last Updated" indicator */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span
-            style={{
-              fontSize: '0.74rem',
-              color: '#64748B',
-              fontWeight: 600,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              backgroundColor: '#F8FAFC',
-              border: '1px solid #E2E8F0',
-              padding: '4px 10px',
-              borderRadius: '8px',
-            }}
-          >
-            <Clock size={12} color="#64748B" />
-            Last updated: {lastUpdated ? lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Just now'}
-          </span>
-          <button
-            onClick={() => fetchStats()}
-            disabled={refreshing}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '28px',
-              height: '28px',
-              borderRadius: '8px',
-              border: '1px solid #E2E8F0',
-              backgroundColor: '#FFFFFF',
-              color: '#475569',
-              cursor: refreshing ? 'not-allowed' : 'pointer',
-              transition: 'all 0.15s ease',
-            }}
-            title="Refresh metrics"
-          >
-            <RefreshCw size={13} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
-          </button>
-        </div>
+
       </div>
 
       {error && (
