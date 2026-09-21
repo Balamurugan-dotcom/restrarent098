@@ -478,22 +478,6 @@ const AdminDashboardPage = () => {
               <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#34D399', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Executive Live Turnover
               </span>
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                  color: '#6EE7B7',
-                  fontSize: '0.64rem',
-                  fontWeight: 800,
-                  padding: '2px 7px',
-                  borderRadius: '9999px',
-                }}
-              >
-                <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} />
-                Real-Time Ops
-              </span>
             </div>
             <div style={{ fontSize: '2.15rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
               ₹{(stats?.totalSales ?? stats?.totalRevenue ?? 0).toLocaleString('en-IN')}
