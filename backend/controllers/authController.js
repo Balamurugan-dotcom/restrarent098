@@ -233,10 +233,65 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
+// @desc    Reset password using email and security phone / recovery key
+// @route   POST /api/auth/reset-password
+// @access  Public
+const resetPassword = async (req, res, next) => {
+  try {
+    const { email, phone, recoveryKey, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide both email and your new password.',
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 6 characters long.',
+      });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No account found with this email address.',
+      });
+    }
+
+    // Security Verification: Match phone number or master recovery key
+    const masterRecoveryKey = process.env.ADMIN_RECOVERY_KEY || 'spicegarden2026';
+    const isPhoneMatch = phone && user.phone && user.phone.trim() === phone.trim();
+    const isKeyMatch = recoveryKey && recoveryKey.trim() === masterRecoveryKey;
+
+    if (!isPhoneMatch && !isKeyMatch) {
+      return res.status(400).json({
+        success: false,
+        message: 'Verification failed. Please enter the registered phone number or master recovery key.',
+      });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Password reset successfully! You can now log in with your new password.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
   updateProfile,
   getAllUsers,
+  resetPassword,
 };

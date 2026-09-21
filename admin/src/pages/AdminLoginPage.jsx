@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../context/AdminAuthContext';
-import { ShieldCheck, Lock, Mail, Eye, EyeOff, LogIn, ChefHat } from 'lucide-react';
+import adminApi from '../api/adminApi';
+import { ShieldCheck, Lock, Mail, Eye, EyeOff, LogIn, ChefHat, KeyRound, CheckCircle2, X, Phone, HelpCircle } from 'lucide-react';
 
 const AdminLoginPage = () => {
   const { login } = useAdminAuth();
@@ -12,9 +13,68 @@ const AdminLoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Forgot password modal state
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('admin@spicegarden.com');
+  const [forgotPhone, setForgotPhone] = useState('9876543210');
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
+  const [showForgotNewPass, setShowForgotNewPass] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
+
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setError('');
+  };
+
+  const handleUseDefault = () => {
+    setFormData({
+      email: 'admin@spicegarden.com',
+      password: 'Admin@123',
+    });
+    setError('');
+    setShowForgotModal(false);
+  };
+
+  const handleResetSubmit = async (e) => {
+    e.preventDefault();
+    if (!forgotEmail || !forgotNewPassword) {
+      setForgotError('Please enter your email and new password.');
+      return;
+    }
+    if (forgotNewPassword.length < 6) {
+      setForgotError('New password must be at least 6 characters long.');
+      return;
+    }
+
+    try {
+      setForgotLoading(true);
+      setForgotError('');
+      setForgotSuccess('');
+
+      const res = await adminApi.post('/auth/reset-password', {
+        email: forgotEmail,
+        phone: forgotPhone,
+        newPassword: forgotNewPassword,
+      });
+
+      setForgotSuccess(res.data.message || 'Password reset successfully!');
+      setFormData({
+        email: forgotEmail,
+        password: forgotNewPassword,
+      });
+
+      setTimeout(() => {
+        setShowForgotModal(false);
+        setForgotSuccess('');
+        setForgotNewPassword('');
+      }, 1500);
+    } catch (err) {
+      setForgotError(err.response?.data?.message || err.message || 'Failed to reset password. Please check your details.');
+    } finally {
+      setForgotLoading(false);
+    }
   };
 
 
@@ -138,9 +198,30 @@ const AdminLoginPage = () => {
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E1', marginBottom: '0.4rem' }}>
-                Password
-              </label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: 600, color: '#CBD5E1' }}>
+                  Password
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForgotModal(true);
+                    setForgotError('');
+                    setForgotSuccess('');
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#10B981',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    padding: 0,
+                  }}
+                >
+                  Forgot Password?
+                </button>
+              </div>
               <div style={{ position: 'relative' }}>
                 <Lock size={18} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#64748B' }} />
                 <input
@@ -185,6 +266,255 @@ const AdminLoginPage = () => {
             </button>
           </form>
         </div>
+
+        {/* Forgot Password Modal */}
+        {showForgotModal && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(15, 23, 42, 0.75)',
+              backdropFilter: 'blur(5px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 100,
+              padding: '1.5rem',
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: '#1E293B',
+                border: '1px solid #334155',
+                borderRadius: '16px',
+                padding: '1.75rem',
+                width: '100%',
+                maxWidth: '440px',
+                color: '#FFFFFF',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
+              }}
+            >
+              {/* Modal Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <KeyRound size={20} color="#10B981" />
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: '#F8FAFC' }}>
+                    Reset Admin Password
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#94A3B8',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Default Master Credentials Card */}
+              <div
+                style={{
+                  backgroundColor: '#0F172A',
+                  border: '1px solid #334155',
+                  borderRadius: '10px',
+                  padding: '0.85rem',
+                  marginBottom: '1.25rem',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <span style={{ fontSize: '0.72rem', color: '#94A3B8', fontWeight: 700, textTransform: 'uppercase' }}>
+                      Default Master Credentials
+                    </span>
+                    <div style={{ fontSize: '0.82rem', color: '#34D399', fontWeight: 700, marginTop: '2px' }}>
+                      Password: <code>Admin@123</code>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleUseDefault}
+                    style={{
+                      backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                      color: '#10B981',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      borderRadius: '6px',
+                      padding: '0.4rem 0.65rem',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Auto-Fill
+                  </button>
+                </div>
+              </div>
+
+              {forgotError && (
+                <div
+                  style={{
+                    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    borderRadius: '8px',
+                    padding: '0.65rem 0.85rem',
+                    marginBottom: '1rem',
+                    color: '#FCA5A5',
+                    fontSize: '0.82rem',
+                  }}
+                >
+                  ⚠️ {forgotError}
+                </div>
+              )}
+
+              {forgotSuccess && (
+                <div
+                  style={{
+                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                    borderRadius: '8px',
+                    padding: '0.65rem 0.85rem',
+                    marginBottom: '1rem',
+                    color: '#6EE7B7',
+                    fontSize: '0.82rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                >
+                  <CheckCircle2 size={16} />
+                  <span>{forgotSuccess}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleResetSubmit}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#94A3B8', fontWeight: 600, marginBottom: '4px' }}>
+                    Admin Email
+                  </label>
+                  <input
+                    type="email"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.85rem',
+                      backgroundColor: '#0F172A',
+                      border: '1px solid #334155',
+                      borderRadius: '8px',
+                      color: '#FFFFFF',
+                      fontSize: '0.85rem',
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#94A3B8', fontWeight: 600, marginBottom: '4px' }}>
+                    Registered Phone / Master Key
+                  </label>
+                  <input
+                    type="text"
+                    value={forgotPhone}
+                    onChange={(e) => setForgotPhone(e.target.value)}
+                    placeholder="9876543210 or master key"
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.85rem',
+                      backgroundColor: '#0F172A',
+                      border: '1px solid #334155',
+                      borderRadius: '8px',
+                      color: '#FFFFFF',
+                      fontSize: '0.85rem',
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#94A3B8', fontWeight: 600, marginBottom: '4px' }}>
+                    Set New Password
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showForgotNewPass ? 'text' : 'password'}
+                      value={forgotNewPassword}
+                      onChange={(e) => setForgotNewPassword(e.target.value)}
+                      placeholder="Enter at least 6 characters"
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '0.65rem 2.4rem 0.65rem 0.85rem',
+                        backgroundColor: '#0F172A',
+                        border: '1px solid #334155',
+                        borderRadius: '8px',
+                        color: '#FFFFFF',
+                        fontSize: '0.85rem',
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotNewPass(!showForgotNewPass)}
+                      style={{
+                        position: 'absolute',
+                        right: '0.75rem',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: '#64748B',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: 0,
+                      }}
+                    >
+                      {showForgotNewPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotModal(false)}
+                    style={{
+                      flex: 1,
+                      padding: '0.7rem',
+                      borderRadius: '8px',
+                      backgroundColor: 'transparent',
+                      border: '1px solid #334155',
+                      color: '#94A3B8',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="admin-btn admin-btn-primary"
+                    style={{
+                      flex: 1.5,
+                      padding: '0.7rem',
+                      borderRadius: '8px',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {forgotLoading ? 'Resetting...' : 'Save New Password'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
