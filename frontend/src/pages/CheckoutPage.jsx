@@ -193,11 +193,11 @@ const CheckoutPage = () => {
             {/* Left: Address + Payment */}
             <div>
               {/* Delivery Address */}
-              <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '1.75rem', marginBottom: '1.5rem' }}>
+              <div className="checkout-card" style={{ marginBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <MapPin size={20} color="#E65100" /> Delivery Address in Bangalore
                 </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="checkout-form-fields-grid">
                   <div className="form-group" style={{ gridColumn: '1/-1' }}>
                     <label className="form-label" htmlFor="street">Street Address / Flat / Building *</label>
                     <input id="street" name="street" type="text" className="form-input" placeholder="e.g. #12, 3rd Cross, 5th Main" value={address.street} onChange={handleAddressChange} required />
@@ -226,7 +226,7 @@ const CheckoutPage = () => {
               </div>
 
               {/* Payment Method */}
-              <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #E2E8F0', padding: '1.75rem' }}>
+              <div className="checkout-card">
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <CreditCard size={20} color="#E65100" /> Payment Method
                 </h3>

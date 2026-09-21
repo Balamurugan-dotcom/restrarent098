@@ -47,7 +47,7 @@ const RegisterPage = () => {
           </Link>
         </div>
 
-        <div style={{ background: '#ffffff', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.08)', border: '1px solid #F1F5F9' }}>
+        <div className="auth-card">
           <div style={{ marginBottom: '2rem' }}>
             <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.35rem' }}>Create Account</h1>
             <p style={{ color: '#64748B', fontSize: '0.95rem' }}>Join Spice Garden Bangalore – Order authentic Indian cuisine</p>
