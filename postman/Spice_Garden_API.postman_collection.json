@@ -1,0 +1,613 @@
+{
+  "info": {
+    "_postman_id": "8f3b6c2d-9481-4b10-8bca-731940989fba",
+    "name": "Spice Garden Restaurant & Delivery API",
+    "description": "Complete Postman API Collection for Spice Garden (Indiranagar, Bangalore). Includes all Customer & Admin Endpoints with JWT Authentication, Order Management, 60 Dishes Catalog, and Live Operations.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "customerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testFoodId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "testOrderId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Public Endpoints",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "health"]
+            }
+          }
+        },
+        {
+          "name": "Get Categories (6 Items)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/foods/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["foods", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get All Foods (60 Dishes)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.length > 0) {",
+                  "    pm.collectionVariables.set('testFoodId', jsonData.data[0]._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/foods?limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["foods"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter Foods (Category & Veg Filter)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/foods?category=Biryani&veg=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["foods"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Biryani"
+                },
+                {
+                  "key": "veg",
+                  "value": "false"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Food by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/foods/{{testFoodId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["foods", "{{testFoodId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Approved Customer Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication",
+      "item": [
+        {
+          "name": "Customer Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('customerToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Priya Sharma\",\n  \"email\": \"priya.sharma@example.com\",\n  \"password\": \"Customer@123\",\n  \"phone\": \"9845012345\",\n  \"address\": {\n    \"street\": \"12th Main, 100 Feet Road\",\n    \"area\": \"Indiranagar\",\n    \"city\": \"Bangalore\",\n    \"pincode\": \"560038\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Customer Login (Auto-Saves Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('customerToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"rahul@example.com\",\n  \"password\": \"Customer@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Admin Login (Auto-Saves Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('adminToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@spicegarden.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Customer Protected Endpoints",
+      "item": [
+        {
+          "name": "Get Profile (/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"phone\": \"9845099999\",\n  \"address\": {\n    \"street\": \"#42, 100 Feet Road\",\n    \"area\": \"Indiranagar\",\n    \"city\": \"Bangalore\",\n    \"pincode\": \"560038\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Create Order (Bangalore Address)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data._id) {",
+                  "    pm.collectionVariables.set('testOrderId', jsonData.data._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"food\": \"{{testFoodId}}\",\n      \"quantity\": 2\n    }\n  ],\n  \"deliveryAddress\": {\n    \"street\": \"#15, 12th Main, HAL 2nd Stage\",\n    \"area\": \"Indiranagar\",\n    \"landmark\": \"Near Metro Station\",\n    \"city\": \"Bangalore\",\n    \"pincode\": \"560038\",\n    \"instructions\": \"Please call before arrival\"\n  },\n  \"paymentMethod\": \"Online Payment\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Orders (/my-orders)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/my-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "my-orders"]
+            }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{testOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{testOrderId}}"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Order (Only if 'Order Placed')",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Changed dining plans\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{testOrderId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{testOrderId}}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "Submit Customer Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{testOrderId}}\",\n  \"rating\": 5,\n  \"comment\": \"Incredible Biryani! Delivered piping hot to Indiranagar within 30 minutes. Super aromatic with authentic desi ghee!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Admin Protected Endpoints",
+      "item": [
+        {
+          "name": "Admin Dashboard Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stats/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["stats", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Admin Get All Orders (Live Kitchen Feed)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            }
+          }
+        },
+        {
+          "name": "Admin Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Preparing\",\n  \"note\": \"Master chef has started preparing dishes\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{testOrderId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{testOrderId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Admin Create Food Dish",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Royal Zafrani Kebab\",\n  \"description\": \"Tender minced meat infused with saffron, cardamom and roasted cashews.\",\n  \"price\": 380,\n  \"category\": \"Starters\",\n  \"image\": \"/images/foods/mutton-galouti-kebab.jpg\",\n  \"isVeg\": false,\n  \"spiceLevel\": \"Medium\",\n  \"preparationTime\": \"25 mins\",\n  \"isPopular\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/foods",
+              "host": ["{{baseUrl}}"],
+              "path": ["foods"]
+            }
+          }
+        },
+        {
+          "name": "Admin Update Food Dish",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 399,\n  \"description\": \"Enhanced recipe served with mint chutney and pickled onions.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/foods/{{testFoodId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["foods", "{{testFoodId}}"]
+            }
+          }
+        },
+        {
+          "name": "Admin Toggle Dish Availability",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isAvailable\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/foods/{{testFoodId}}/availability",
+              "host": ["{{baseUrl}}"],
+              "path": ["foods", "{{testFoodId}}", "availability"]
+            }
+          }
+        },
+        {
+          "name": "Admin Get All Reviews (Moderation Queue)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reviews/admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", "admin"]
+            }
+          }
+        },
+        {
+          "name": "Admin Toggle Review Approval",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isApproved\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reviews/:id/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews", ":id", "approve"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

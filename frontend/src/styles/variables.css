@@ -1,0 +1,60 @@
+:root {
+  /* Warm Indian Culinary Palette */
+  --primary: #E65100;
+  --primary-hover: #D84315;
+  --primary-light: #FFF3E0;
+  --primary-gradient: linear-gradient(135deg, #FF6F00 0%, #E65100 50%, #BF360C 100%);
+  --gold-accent: #FFB300;
+  --gold-gradient: linear-gradient(135deg, #FFE082 0%, #FFB300 50%, #FF8F00 100%);
+  
+  /* Veg & Non-Veg Culinary Indicators */
+  --veg-green: #2E7D32;
+  --veg-bg: #E8F5E9;
+  --nonveg-red: #C62828;
+  --nonveg-bg: #FFEBEE;
+
+  /* Surfaces & Neutrals */
+  --bg-main: #FAFAF8;
+  --bg-card: #FFFFFF;
+  --bg-card-glass: rgba(255, 255, 255, 0.88);
+  --bg-dark: #14171A;
+  --bg-dark-card: #1E2328;
+  --text-main: #1C2024;
+  --text-muted: #656F7D;
+  --text-light: #94A3B8;
+  --text-white: #FFFFFF;
+  --border-color: #E2E8F0;
+  --border-focus: #FF9800;
+
+  /* Status Colors */
+  --status-placed-bg: #E0F2FE;
+  --status-placed-text: #0369A1;
+  --status-prep-bg: #FEF3C7;
+  --status-prep-text: #B45309;
+  --status-delivery-bg: #EDE9FE;
+  --status-delivery-text: #6D28D9;
+  --status-delivered-bg: #DCFCE7;
+  --status-delivered-text: #15803D;
+  --status-cancelled-bg: #FEE2E2;
+  --status-cancelled-text: #B91C1C;
+
+  /* Typography */
+  --font-heading: 'Outfit', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 25px -5px rgba(230, 81, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 16px 32px rgba(230, 81, 0, 0.14);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
