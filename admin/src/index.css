@@ -1252,4 +1252,264 @@ button {
   }
 }
 
+/* ==========================================================================
+   DISH FORM MODAL RESPONSIVE & MOBILE ALIGNMENT
+   ========================================================================== */
+.food-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.food-modal-card {
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  max-width: 620px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+}
+
+.food-form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.food-checkbox-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.food-checkbox-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.food-image-section {
+  margin-bottom: 1.5rem;
+  background-color: #F8FAFC;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.food-image-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.food-image-mode-toggles {
+  display: inline-flex;
+  gap: 4px;
+  background-color: #F1F5F9;
+  padding: 3px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.food-image-mode-btn {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.food-image-action-grid {
+  display: flex;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.food-image-action-btn {
+  flex: 1 1 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1E293B;
+  background-color: #FFFFFF;
+  border: 1.5px dashed #CBD5E1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.food-image-preview-box {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.food-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-top: 1px solid #E2E8F0;
+  padding-top: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mobile specific alignment (< 640px) */
+@media (max-width: 640px) {
+  .food-modal-backdrop {
+    padding: 0.4rem !important;
+  }
+
+  .food-modal-card {
+    padding: 1.15rem 0.9rem !important;
+    border-radius: 16px !important;
+    max-height: 94vh !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  .food-form-row-2col {
+    grid-template-columns: 1fr !important;
+    gap: 0.85rem !important;
+    margin-bottom: 0.95rem !important;
+  }
+
+  .food-checkbox-stack {
+    gap: 0.5rem !important;
+  }
+
+  .food-checkbox-pill {
+    background-color: #F8FAFC !important;
+    border: 1px solid #E2E8F0 !important;
+    padding: 0.55rem 0.75rem !important;
+    border-radius: 8px !important;
+  }
+
+  .food-image-section {
+    padding: 0.75rem !important;
+  }
+
+  .food-image-header-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+  }
+
+  .food-image-mode-toggles {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+
+  .food-image-mode-btn {
+    flex: 1 !important;
+    text-align: center !important;
+    justify-content: center !important;
+    padding: 6px 4px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .food-image-action-grid {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .food-image-action-btn {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    padding: 9px 12px !important;
+  }
+
+  .food-image-preview-box {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.65rem !important;
+  }
+
+  .food-image-preview-left {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .food-image-preview-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .food-image-preview-info span {
+    max-width: 100% !important;
+    word-break: break-all !important;
+    white-space: normal !important;
+  }
+
+  .food-image-clear-btn {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 6px 10px !important;
+  }
+
+  .food-modal-actions {
+    justify-content: stretch !important;
+    gap: 0.6rem !important;
+  }
+
+  .food-modal-actions .admin-btn {
+    flex: 1 !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0.75rem 1rem !important;
+  }
+}
+
 

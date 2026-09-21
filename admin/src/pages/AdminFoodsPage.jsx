@@ -2057,31 +2057,8 @@ const AdminFoodsPage = () => {
 
       {/* Add / Edit Dish Modal */}
       {isModalOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(15, 23, 42, 0.7)',
-            backdropFilter: 'blur(5px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 90,
-            padding: '1rem',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#FFFFFF',
-              borderRadius: '20px',
-              maxWidth: '620px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: '2rem',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-            }}
-          >
+        <div className="food-modal-backdrop">
+          <div className="food-modal-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
               <div>
                 <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#0F172A' }}>
@@ -2161,7 +2138,7 @@ const AdminFoodsPage = () => {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.1rem' }}>
+              <div className="food-form-row-2col">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.35rem' }}>
                     Price (₹) *
@@ -2206,7 +2183,7 @@ const AdminFoodsPage = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.1rem' }}>
+              <div className="food-form-row-2col">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.35rem' }}>
                     Dietary Classification
@@ -2238,7 +2215,7 @@ const AdminFoodsPage = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.1rem' }}>
+              <div className="food-form-row-2col">
                 <div>
                   <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.35rem' }}>
                     Preparation Time
@@ -2252,23 +2229,23 @@ const AdminFoodsPage = () => {
                   />
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.6rem' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
+                <div className="food-checkbox-stack">
+                  <label className="food-checkbox-pill">
                     <input
                       type="checkbox"
                       checked={formData.isPopular}
                       onChange={(e) => setFormData({ ...formData, isPopular: e.target.checked })}
-                      style={{ width: '16px', height: '16px', accentColor: '#D97706' }}
+                      style={{ width: '16px', height: '16px', accentColor: '#D97706', cursor: 'pointer' }}
                     />
                     ⭐ Chef's Popular Special
                   </label>
 
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
+                  <label className="food-checkbox-pill">
                     <input
                       type="checkbox"
                       checked={formData.isAvailable}
                       onChange={(e) => setFormData({ ...formData, isAvailable: e.target.checked })}
-                      style={{ width: '16px', height: '16px', accentColor: '#059669' }}
+                      style={{ width: '16px', height: '16px', accentColor: '#059669', cursor: 'pointer' }}
                     />
                     ✅ Available In Stock
                   </label>
@@ -2276,31 +2253,23 @@ const AdminFoodsPage = () => {
               </div>
 
               {/* Image Selection: Browse from Computer / Device, Camera Capture, or URL */}
-              <div style={{ marginBottom: '1.5rem', backgroundColor: '#F8FAFC', padding: '1rem', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div className="food-image-section">
+                <div className="food-image-header-row">
                   <label style={{ fontSize: '0.82rem', fontWeight: 700, color: '#334155', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <ImageIcon size={15} color="#059669" />
                     Dish Image *
                   </label>
                   
                   {/* Mode toggles */}
-                  <div style={{ display: 'inline-flex', gap: '4px', backgroundColor: '#F1F5F9', padding: '3px', borderRadius: '8px' }}>
+                  <div className="food-image-mode-toggles">
                     <button
                       type="button"
                       onClick={() => { stopLiveCamera(); setImageInputMode('browse'); }}
+                      className="food-image-mode-btn"
                       style={{
-                        padding: '4px 8px',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        borderRadius: '6px',
-                        border: 'none',
-                        cursor: 'pointer',
                         backgroundColor: imageInputMode === 'browse' ? '#FFFFFF' : 'transparent',
                         color: imageInputMode === 'browse' ? '#0F172A' : '#64748B',
                         boxShadow: imageInputMode === 'browse' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px'
                       }}
                     >
                       <FolderOpen size={12} /> Browse
@@ -2308,19 +2277,11 @@ const AdminFoodsPage = () => {
                     <button
                       type="button"
                       onClick={() => { setImageInputMode('camera'); startLiveCamera(); }}
+                      className="food-image-mode-btn"
                       style={{
-                        padding: '4px 8px',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        borderRadius: '6px',
-                        border: 'none',
-                        cursor: 'pointer',
                         backgroundColor: imageInputMode === 'camera' ? '#FFFFFF' : 'transparent',
                         color: imageInputMode === 'camera' ? '#0F172A' : '#64748B',
                         boxShadow: imageInputMode === 'camera' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px'
                       }}
                     >
                       <Camera size={12} /> Camera
@@ -2328,19 +2289,11 @@ const AdminFoodsPage = () => {
                     <button
                       type="button"
                       onClick={() => { stopLiveCamera(); setImageInputMode('url'); }}
+                      className="food-image-mode-btn"
                       style={{
-                        padding: '4px 8px',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        borderRadius: '6px',
-                        border: 'none',
-                        cursor: 'pointer',
                         backgroundColor: imageInputMode === 'url' ? '#FFFFFF' : 'transparent',
                         color: imageInputMode === 'url' ? '#0F172A' : '#64748B',
                         boxShadow: imageInputMode === 'url' ? '0 1px 2px rgba(0,0,0,0.08)' : 'none',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '4px'
                       }}
                     >
                       <ExternalLink size={12} /> URL / Path
@@ -2366,7 +2319,7 @@ const AdminFoodsPage = () => {
                 />
 
                 {/* Primary Action Buttons Bar */}
-                <div style={{ display: 'flex', gap: '0.65rem', marginBottom: '0.85rem', flexWrap: 'wrap' }}>
+                <div className="food-image-action-grid">
                   <button
                     type="button"
                     onClick={() => {
@@ -2374,22 +2327,7 @@ const AdminFoodsPage = () => {
                       setImageInputMode('browse');
                       if (fileInputRef.current) fileInputRef.current.click();
                     }}
-                    style={{
-                      flex: '1 1 140px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '7px',
-                      padding: '8px 14px',
-                      fontSize: '0.8rem',
-                      fontWeight: 700,
-                      color: '#1E293B',
-                      backgroundColor: '#FFFFFF',
-                      border: '1.5px dashed #CBD5E1',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                    }}
+                    className="food-image-action-btn"
                   >
                     <Upload size={15} color="#059669" />
                     Upload from Browse
@@ -2401,21 +2339,10 @@ const AdminFoodsPage = () => {
                       setImageInputMode('camera');
                       startLiveCamera();
                     }}
+                    className="food-image-action-btn"
                     style={{
-                      flex: '1 1 140px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '7px',
-                      padding: '8px 14px',
-                      fontSize: '0.8rem',
-                      fontWeight: 700,
-                      color: '#1E293B',
                       backgroundColor: isCameraActive ? '#FEF3C7' : '#FFFFFF',
-                      border: isCameraActive ? '1.5px solid #F59E0B' : '1.5px dashed #CBD5E1',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
+                      borderColor: isCameraActive ? '#F59E0B' : '#CBD5E1',
                     }}
                   >
                     <Camera size={15} color="#D97706" />
@@ -2534,18 +2461,8 @@ const AdminFoodsPage = () => {
 
                 {/* Preview Thumbnail Card with Details and Clear option */}
                 {formData.image && (
-                  <div style={{
-                    marginTop: '0.75rem',
-                    padding: '0.65rem 0.85rem',
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '8px',
-                    border: '1px solid #E2E8F0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '0.75rem'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div className="food-image-preview-box">
+                    <div className="food-image-preview-left" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
                       <img
                         src={getImageUrl(formData.image)}
                         alt="Preview"
@@ -2554,8 +2471,8 @@ const AdminFoodsPage = () => {
                           e.currentTarget.src = 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=600&q=80';
                         }}
                       />
-                      <div>
-                        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div className="food-image-preview-info" style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                           <span>Image Ready</span>
                           {formData.image.startsWith('data:') ? (
                             <span style={{ fontSize: '0.65rem', backgroundColor: '#ECFDF5', color: '#059669', padding: '1px 6px', borderRadius: '4px', fontWeight: 800 }}>
@@ -2567,7 +2484,7 @@ const AdminFoodsPage = () => {
                             </span>
                           )}
                         </div>
-                        <span style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <span style={{ fontSize: '0.72rem', color: '#64748B', display: 'block', wordBreak: 'break-all' }}>
                           {formData.image.startsWith('data:') ? 'Optimized image ready to save' : formData.image}
                         </span>
                       </div>
@@ -2576,8 +2493,9 @@ const AdminFoodsPage = () => {
                     <button
                       type="button"
                       onClick={() => setFormData({ ...formData, image: '' })}
+                      className="food-image-clear-btn"
                       style={{
-                        padding: '4px 8px',
+                        padding: '5px 10px',
                         fontSize: '0.72rem',
                         fontWeight: 700,
                         color: '#EF4444',
@@ -2595,7 +2513,7 @@ const AdminFoodsPage = () => {
                 )}
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderTop: '1px solid #E2E8F0', paddingTop: '1.25rem' }}>
+              <div className="food-modal-actions">
                 <button
                   type="button"
                   onClick={() => {
