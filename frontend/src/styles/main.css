@@ -85,6 +85,12 @@ img {
   }
 }
 
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
+
 .container-narrow {
   max-width: 860px;
   margin: 0 auto;

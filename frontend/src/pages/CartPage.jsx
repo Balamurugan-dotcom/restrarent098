@@ -38,12 +38,12 @@ const CartPage = () => {
   return (
     <div className="main-content" style={{ padding: '2.5rem 0' }}>
       <div className="container">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+        <div className="cart-header-row">
           <div>
-            <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>My Cart</h1>
-            <p style={{ color: '#64748B' }}>{totalCount} item{totalCount !== 1 ? 's' : ''} selected</p>
+            <h1>My Cart</h1>
+            <p className="cart-count-subtitle">{totalCount} item{totalCount !== 1 ? 's' : ''} selected</p>
           </div>
-          <button type="button" onClick={clearCart} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#EF4444', fontSize: '0.88rem', fontWeight: 600 }}>
+          <button type="button" className="cart-clear-btn" onClick={clearCart}>
             <Trash2 size={16} /> Clear All
           </button>
         </div>
@@ -53,15 +53,15 @@ const CartPage = () => {
           <div className="cart-items-card">
             {/* Free Delivery Progress Bar */}
             <div className="free-delivery-progress">
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
-                <span style={{ fontWeight: 600, color: '#1E293B', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <div className="free-delivery-header">
+                <span className="free-delivery-label">
                   <Truck size={15} color="#E65100" />
                   {amountNeededForFreeDelivery > 0
                     ? <>Add <strong style={{ color: '#E65100' }}>₹{amountNeededForFreeDelivery}</strong> more for FREE delivery!</>
                     : <span style={{ color: '#15803D', fontWeight: 700 }}>🎉 You've unlocked FREE delivery!</span>
                   }
                 </span>
-                <span style={{ color: '#64748B', fontWeight: 600 }}>₹{subtotal} / ₹500</span>
+                <span className="free-delivery-target">₹{subtotal} / ₹500</span>
               </div>
               <div className="progress-track">
                 <div className="progress-bar" style={{ width: `${freeDeliveryProgress}%` }} />
@@ -78,30 +78,35 @@ const CartPage = () => {
                   onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=200&q=80'; }}
                 />
                 <div className="cart-item-info">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                  <div className="cart-item-title-row">
                     <div className={`food-diet-badge ${item.isVeg ? 'veg' : 'non-veg'}`}>
                       <div className="dot" />
                     </div>
                     <h4>{item.name}</h4>
                   </div>
-                  <div className="item-price">₹{item.price} × {item.quantity} = ₹{item.price * item.quantity}</div>
+                  <div className="item-unit-price">₹{item.price} each</div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div className="qty-stepper">
-                    <button type="button" onClick={() => updateQuantity(item.food, -1)} aria-label="Decrease"><Minus size={14} /></button>
-                    <span className="qty-val">{item.quantity}</span>
-                    <button type="button" onClick={() => updateQuantity(item.food, 1)} aria-label="Increase"><Plus size={14} /></button>
+                <div className="cart-item-actions">
+                  <div className="cart-item-total-price">
+                    ₹{item.price} × {item.quantity} = <strong>₹{item.price * item.quantity}</strong>
                   </div>
-                  <button type="button" onClick={() => removeFromCart(item.food)} style={{ color: '#EF4444', padding: '4px' }}>
-                    <Trash2 size={18} />
-                  </button>
+                  <div className="cart-item-controls">
+                    <div className="qty-stepper">
+                      <button type="button" onClick={() => updateQuantity(item.food, -1)} aria-label="Decrease"><Minus size={14} /></button>
+                      <span className="qty-val">{item.quantity}</span>
+                      <button type="button" onClick={() => updateQuantity(item.food, 1)} aria-label="Increase"><Plus size={14} /></button>
+                    </div>
+                    <button type="button" className="cart-item-delete-btn" onClick={() => removeFromCart(item.food)} title="Remove Item">
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           {/* Order Summary */}
-          <div className="order-summary-card" style={{ position: 'sticky', top: '100px' }}>
+          <div className="order-summary-card">
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid #F1F5F9' }}>
               Order Summary
             </h3>
