@@ -340,6 +340,52 @@ const AdminLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Mobile Native Bottom Navigation Bar */}
+      <nav className="admin-mobile-bottom-nav">
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) => `admin-bottom-nav-link ${isActive ? 'active' : ''}`}
+        >
+          <LayoutDashboard size={20} />
+          <span>Dashboard</span>
+        </NavLink>
+
+        <NavLink
+          to="/orders"
+          className={({ isActive }) => `admin-bottom-nav-link ${isActive ? 'active' : ''}`}
+        >
+          <ShoppingBag size={20} />
+          <span>Orders</span>
+        </NavLink>
+
+        <NavLink
+          to="/menu"
+          className={({ isActive }) => `admin-bottom-nav-link ${isActive ? 'active' : ''}`}
+        >
+          <UtensilsCrossed size={20} />
+          <span>Menu</span>
+        </NavLink>
+
+        <NavLink
+          to="/customers"
+          className={({ isActive }) => `admin-bottom-nav-link ${isActive ? 'active' : ''}`}
+        >
+          <UserCheck size={20} />
+          <span>Diners</span>
+        </NavLink>
+
+        <button
+          type="button"
+          onClick={() => setMobileOpen(true)}
+          className="admin-bottom-nav-link"
+          aria-label="Open More Menu"
+        >
+          <Menu size={20} />
+          <span>More</span>
+        </button>
+      </nav>
     </div>
   );
 };

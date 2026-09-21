@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../context/AdminAuthContext';
-import { ShieldCheck, Lock, Mail, Eye, EyeOff, LogIn, ChefHat, Database, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, Eye, EyeOff, LogIn, ChefHat } from 'lucide-react';
 
 const AdminLoginPage = () => {
   const { login } = useAdminAuth();
@@ -31,7 +31,11 @@ const AdminLoginPage = () => {
       await login(formData.email, formData.password);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Authentication failed. Please verify admin credentials.');
+      console.error('Login error:', err);
+      setError(
+        err.response?.data?.message ||
+        'Authentication failed. Please verify your admin credentials.'
+      );
     } finally {
       setLoading(false);
     }
@@ -41,17 +45,15 @@ const AdminLoginPage = () => {
     <div
       style={{
         minHeight: '100vh',
-        backgroundColor: '#0B1120',
-        backgroundImage: 'radial-gradient(at 0% 0%, rgba(5, 150, 105, 0.15) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(234, 88, 12, 0.12) 0px, transparent 50%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '2rem 1rem',
-        fontFamily: 'var(--font-main)',
+        backgroundColor: '#0F172A',
+        padding: '1.5rem',
       }}
     >
       <div style={{ width: '100%', maxWidth: '440px' }}>
-        {/* Brand Banner */}
+        {/* Brand Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div
             style={{
@@ -69,30 +71,9 @@ const AdminLoginPage = () => {
           >
             <ChefHat size={30} />
           </div>
-          <h1 style={{ color: '#F8FAFC', fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
+          <h1 style={{ color: '#F8FAFC', fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em', margin: 0 }}>
             Spice Garden Admin
           </h1>
-          <p style={{ color: '#94A3B8', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Operations & Kitchen Pipeline Console
-          </p>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              marginTop: '0.6rem',
-              padding: '0.25rem 0.65rem',
-              borderRadius: '9999px',
-              backgroundColor: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.25)',
-              color: '#34D399',
-              fontSize: '0.75rem',
-              fontWeight: 600,
-            }}
-          >
-            <Database size={12} />
-            <span>MongoDB 8.3 Persistent Database</span>
-          </div>
         </div>
 
         {/* Login Card */}
@@ -203,18 +184,6 @@ const AdminLoginPage = () => {
               )}
             </button>
           </form>
-
-          <div style={{ marginTop: '1.5rem', textAlign: 'center', borderTop: '1px solid #334155', paddingTop: '1.25rem' }}>
-            <a
-              href="http://localhost:5173"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: '#94A3B8', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-            >
-              <span>Switch to Customer Storefront (Port 5173)</span>
-              <ExternalLink size={14} />
-            </a>
-          </div>
         </div>
       </div>
     </div>

@@ -163,7 +163,7 @@ const AdminProtectedRoute = ({ children }) => {
             }}
           >
             <ShieldCheck size={14} color="#10B981" />
-            <span>MongoDB 8.3 Live Connected (27017)</span>
+            <span>Secure Admin Authentication</span>
           </div>
         </div>
 

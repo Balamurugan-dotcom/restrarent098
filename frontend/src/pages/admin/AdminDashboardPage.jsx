@@ -299,9 +299,6 @@ const AdminDashboardPage = () => {
                 />
                 <span>{autoSync ? 'Live Engine Active' : 'Polling Paused'}</span>
               </div>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#EFF6FF', color: '#1E40AF', border: '1px solid #BFDBFE' }}>
-                <Database size={12} /> MongoDB 8.3 Live
-              </span>
             </div>
             <p style={{ color: '#64748B', fontSize: '0.92rem', marginTop: '0.35rem' }}>
               Executive revenue telemetry, live kitchen pipeline advancement, and culinary performance insights.

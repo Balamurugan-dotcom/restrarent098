@@ -401,19 +401,55 @@ const AdminDashboardPage = () => {
         </div>
       )}
 
-      {/* Dashboard Header */}
-      <div style={{ marginBottom: '1.75rem' }}>
-        <h1
-          style={{
-            fontSize: '1.85rem',
-            fontWeight: 800,
-            color: '#0F172A',
-            letterSpacing: '-0.02em',
-            margin: 0,
-          }}
-        >
-          Dashboard
-        </h1>
+      {/* Dashboard Header with Live Ops Badge and Refresh Action */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <h1
+              style={{
+                fontSize: '1.65rem',
+                fontWeight: 900,
+                color: '#0F172A',
+                letterSpacing: '-0.02em',
+                margin: 0,
+              }}
+            >
+              Operations Dashboard
+            </h1>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                backgroundColor: '#ECFDF5',
+                color: '#047857',
+                border: '1px solid #A7F3D0',
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                padding: '3px 9px',
+                borderRadius: '9999px',
+              }}
+            >
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} />
+              Live Kitchen
+            </span>
+          </div>
+          <p style={{ color: '#64748B', fontSize: '0.82rem', margin: '0.25rem 0 0 0' }}>
+            Spice Garden Bangalore • Indiranagar 100 Feet Road
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <button
+            onClick={() => fetchStats(false)}
+            disabled={refreshing}
+            className="admin-btn admin-btn-secondary"
+            style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem', borderRadius: '9px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
+            <RefreshCw size={13} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
+            <span>Sync</span>
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -436,194 +472,198 @@ const AdminDashboardPage = () => {
         </div>
       )}
 
-      {/* 1. Executive Financial & Operations KPI Suite (6 Modern Cards) */}
-      {/* 1. Executive Financial & Operations KPI Suite */}
+      {/* 1. Executive Hero Financial Spotlight & Shift Overview */}
+      <div className="dashboard-hero-revenue-card">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#34D399', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Executive Live Turnover
+              </span>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                  color: '#6EE7B7',
+                  fontSize: '0.66rem',
+                  fontWeight: 800,
+                  padding: '2px 7px',
+                  borderRadius: '9999px',
+                }}
+              >
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} />
+                Real-Time Ops
+              </span>
+            </div>
+            <div style={{ fontSize: '2.3rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+              ₹{(stats?.totalSales ?? stats?.totalRevenue ?? 0).toLocaleString('en-IN')}
+            </div>
+            <p style={{ fontSize: '0.78rem', color: '#94A3B8', margin: '4px 0 0 0' }}>
+              Lifetime Gross Sales Across Online Dine & Delivery Channels
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              onClick={() => fetchStats(false)}
+              disabled={refreshing}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '10px',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                color: '#FFFFFF',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                fontSize: '0.76rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <RefreshCw size={13} style={{ animation: refreshing ? 'spin 1s linear infinite' : 'none' }} />
+              <span>{refreshing ? 'Syncing...' : 'Live Sync'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 3-Pillar Micro Metrics */}
+        <div className="hero-stats-row">
+          <div className="hero-stat-item">
+            <span className="hero-stat-label">Today's Sales</span>
+            <div className="hero-stat-val" style={{ color: '#34D399' }}>
+              ₹{(stats?.todaySales ?? 0).toLocaleString('en-IN')}
+            </div>
+          </div>
+          <div className="hero-stat-item" style={{ borderLeft: '1px solid rgba(255, 255, 255, 0.1)', borderRight: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <span className="hero-stat-label">Today's Orders</span>
+            <div className="hero-stat-val">
+              {stats?.todayOrders ?? stats?.totalOrders ?? 0} Orders
+            </div>
+          </div>
+          <div className="hero-stat-item">
+            <span className="hero-stat-label">Avg Ticket (AOV)</span>
+            <div className="hero-stat-val">
+              ₹{stats?.averageOrderValue || 0}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Quick Actions Bar */}
+      <div className="dashboard-quick-actions">
+        <Link to="/orders" className="quick-action-pill primary">
+          <ShoppingBag size={14} />
+          <span>Live Orders ({activeWorkloadCount})</span>
+        </Link>
+        <a href="#pipeline-section" className="quick-action-pill">
+          <ChefHat size={14} />
+          <span>Kitchen Pipeline</span>
+        </a>
+        <Link to="/menu" className="quick-action-pill">
+          <UtensilsCrossed size={14} />
+          <span>Menu Dishes ({stats?.totalDishes ?? stats?.totalFoods ?? 60})</span>
+        </Link>
+        <button onClick={exportOperationsCSV} className="quick-action-pill" style={{ cursor: 'pointer' }}>
+          <Download size={14} />
+          <span>Export CSV</span>
+        </button>
+      </div>
+
+      {/* Symmetrical 4-Card Operations Grid (2x2 on Mobile, 4x1 on Desktop) */}
       <div className="dashboard-kpi-grid">
-        {/* Card 1: Gross Sales / Revenue */}
-        <div
-          className="admin-card kpi-card"
-          style={{
-            borderTop: '3px solid #10B981',
-            borderRadius: '14px',
-            position: 'relative',
-          }}
-        >
+        {/* Card 1: Total Orders */}
+        <Link to="/orders" className="admin-card kpi-card">
           <div className="kpi-card-header">
             <div>
-              <span className="kpi-card-label">
-                Gross Revenue
-              </span>
+              <span className="kpi-card-label">Total Orders</span>
               <div className="kpi-card-value">
-                ₹{(stats?.totalSales ?? stats?.totalRevenue ?? 0).toLocaleString('en-IN')}
+                {stats?.totalOrders || 0}
               </div>
             </div>
-            <div
-              className="kpi-card-icon"
-              style={{
-                backgroundColor: '#ECFDF5',
-                border: '1px solid #A7F3D0',
-                color: '#059669',
-              }}
-            >
-              <IndianRupee size={20} />
+            <div className="kpi-card-icon kpi-icon-blue">
+              <ShoppingBag size={18} />
             </div>
           </div>
-          <div className="kpi-card-footer" style={{ color: '#059669' }}>
-            <span>📈</span>
-            <span>Today: ₹{(stats?.todaySales ?? 0).toLocaleString('en-IN')} ({stats?.todayOrders ?? 0})</span>
-          </div>
-        </div>
-
-        {/* Card 2: Total Orders */}
-        <Link
-          to="/orders"
-          className="admin-card kpi-card"
-          style={{
-            borderTop: '3px solid #3B82F6',
-            borderRadius: '14px',
-            position: 'relative',
-            textDecoration: 'none',
-            display: 'block',
-          }}
-        >
-          <div className="kpi-card-header">
-            <div>
-              <span className="kpi-card-label">
-                Total Orders
-              </span>
-              <div className="kpi-card-value">
-                {stats?.totalOrders || 0} Orders
-              </div>
-            </div>
-            <div
-              className="kpi-card-icon"
-              style={{
-                backgroundColor: '#EFF6FF',
-                border: '1px solid #BFDBFE',
-                color: '#2563EB',
-              }}
-            >
-              <ShoppingBag size={20} />
-            </div>
-          </div>
-          <div className="kpi-card-footer" style={{ color: '#2563EB' }}>
-            <span>Avg: ₹{stats?.averageOrderValue || 0} / order</span>
-            <span style={{ color: '#3B82F6' }}>
-              View Orders →
+          <div className="kpi-card-footer">
+            <span className="kpi-chip kpi-chip-blue">
+              Avg: ₹{stats?.averageOrderValue || 0}
+            </span>
+            <span className="kpi-link-text" style={{ color: '#2563EB' }}>
+              Orders →
             </span>
           </div>
         </Link>
 
-        {/* Card 3: Active Kitchen Workload */}
-        <div
-          className="admin-card kpi-card"
-          style={{
-            borderTop: '3px solid #F59E0B',
-            borderRadius: '14px',
-            position: 'relative',
-          }}
-        >
+        {/* Card 2: Active Kitchen Workload */}
+        <a href="#pipeline-section" className="admin-card kpi-card" style={{ textDecoration: 'none' }}>
           <div className="kpi-card-header">
             <div>
-              <span className="kpi-card-label">
-                Active in Pipeline
-              </span>
+              <span className="kpi-card-label">Active in Kitchen</span>
               <div className="kpi-card-value" style={{ color: activeWorkloadCount > 0 ? '#D97706' : '#0F172A' }}>
-                {activeWorkloadCount} Orders
+                {activeWorkloadCount}
               </div>
             </div>
-            <div
-              className="kpi-card-icon"
-              style={{
-                backgroundColor: '#FFFBEB',
-                border: '1px solid #FDE68A',
-                color: '#D97706',
-              }}
-            >
-              <ChefHat size={20} />
+            <div className="kpi-card-icon kpi-icon-amber">
+              <ChefHat size={18} />
             </div>
           </div>
-          <div className="kpi-card-footer" style={{ color: '#B45309' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#F59E0B', display: 'inline-block' }} />
-            <span>{stats?.ordersByStatus?.placed ?? 0} Placed • {stats?.ordersByStatus?.preparing ?? 0} Cooking</span>
-          </div>
-        </div>
-
-        {/* Card 4: Registered Customers */}
-        <Link
-          to="/customers"
-          className="admin-card kpi-card"
-          style={{
-            borderTop: '3px solid #6366F1',
-            borderRadius: '14px',
-            position: 'relative',
-            textDecoration: 'none',
-            display: 'block',
-          }}
-        >
-          <div className="kpi-card-header">
-            <div>
-              <span className="kpi-card-label">
-                Diner Accounts
-              </span>
-              <div className="kpi-card-value">
-                {stats?.totalCustomers || 2}
-              </div>
-            </div>
-            <div
-              className="kpi-card-icon"
-              style={{
-                backgroundColor: '#EEF2FF',
-                border: '1px solid #C7D2FE',
-                color: '#4F46E5',
-              }}
-            >
-              <Users size={20} />
-            </div>
-          </div>
-          <div className="kpi-card-footer" style={{ color: '#4F46E5' }}>
-            <span>Verified Diners</span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
-              Directory →
+          <div className="kpi-card-footer">
+            <span className="kpi-chip kpi-chip-amber">
+              {stats?.ordersByStatus?.placed ?? 0} Placed • {stats?.ordersByStatus?.preparing ?? 0} Cook
+            </span>
+            <span className="kpi-link-text" style={{ color: '#D97706' }}>
+              Pipeline →
             </span>
           </div>
-        </Link>
+        </a>
 
-        {/* Card 5: Menu Catalog Health */}
-        <Link
-          to="/menu"
-          className="admin-card kpi-card"
-          style={{
-            borderTop: '3px solid #8B5CF6',
-            borderRadius: '14px',
-            position: 'relative',
-            textDecoration: 'none',
-            display: 'block',
-          }}
-        >
+        {/* Card 3: Menu Catalog */}
+        <Link to="/menu" className="admin-card kpi-card">
           <div className="kpi-card-header">
             <div>
-              <span className="kpi-card-label">
-                Menu Catalog
-              </span>
-              <div className="kpi-card-value">
+              <span className="kpi-card-label">Menu Catalog</span>
+              <div className="kpi-card-value" style={{ color: '#7C3AED' }}>
                 {stats?.totalDishes ?? stats?.totalFoods ?? 60}
               </div>
             </div>
-            <div
-              className="kpi-card-icon"
-              style={{
-                backgroundColor: '#FAF5FF',
-                border: '1px solid #E9D5FF',
-                color: '#7C3AED',
-              }}
-            >
-              <UtensilsCrossed size={20} />
+            <div className="kpi-card-icon kpi-icon-purple">
+              <UtensilsCrossed size={18} />
             </div>
           </div>
-          <div className="kpi-card-footer" style={{ color: '#7C3AED' }}>
-            <span>6 Categories Online</span>
-            <span>Explore Menu →</span>
+          <div className="kpi-card-footer">
+            <span className="kpi-chip" style={{ backgroundColor: '#FAF5FF', color: '#7C3AED' }}>
+              6 Categories
+            </span>
+            <span className="kpi-link-text" style={{ color: '#7C3AED' }}>
+              Menu →
+            </span>
+          </div>
+        </Link>
+
+        {/* Card 4: Registered Diners */}
+        <Link to="/customers" className="admin-card kpi-card">
+          <div className="kpi-card-header">
+            <div>
+              <span className="kpi-card-label">Diner Accounts</span>
+              <div className="kpi-card-value">
+                {stats?.totalCustomers || 1}
+              </div>
+            </div>
+            <div className="kpi-card-icon kpi-icon-indigo">
+              <Users size={18} />
+            </div>
+          </div>
+          <div className="kpi-card-footer">
+            <span className="kpi-chip kpi-chip-indigo">
+              Verified Diners
+            </span>
+            <span className="kpi-link-text" style={{ color: '#4F46E5' }}>
+              Diners →
+            </span>
           </div>
         </Link>
       </div>
@@ -1007,7 +1047,9 @@ const AdminDashboardPage = () => {
             </p>
           </div>
         ) : (
-          <div className="admin-table-container" style={{ border: '1px solid #E2E8F0', borderRadius: '12px' }}>
+          <>
+            <div className="admin-desktop-orders-table">
+              <div className="admin-table-container" style={{ border: '1px solid #E2E8F0', borderRadius: '12px' }}>
             <table className="admin-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
@@ -1213,7 +1255,179 @@ const AdminDashboardPage = () => {
                 })}
               </tbody>
             </table>
-          </div>
+              </div>
+            </div>
+
+            {/* Mobile Native Order Cards View */}
+            <div className="admin-mobile-orders-list">
+              {filteredRecentOrders.map((ord) => {
+                const itemsList = ord.items || ord.orderItems || [];
+                const totalItemsCount = itemsList.reduce((acc, i) => acc + (i.quantity || 1), 0);
+                const itemsSummary = itemsList.map((i) => `${i.quantity ? `${i.quantity}x ` : ''}${i.name}`).join(', ');
+                const customerName = ord.customerDetails?.name || ord.user?.name || 'Diner';
+                const isUpdating = updatingOrderId === ord._id;
+
+                return (
+                  <div key={ord._id} className="mobile-order-card">
+                    {/* Header Row */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+                      <span
+                        style={{
+                          fontFamily: 'monospace',
+                          fontWeight: 800,
+                          color: '#059669',
+                          backgroundColor: '#ECFDF5',
+                          padding: '3px 8px',
+                          borderRadius: '6px',
+                          fontSize: '0.78rem',
+                          border: '1px solid #A7F3D0',
+                        }}
+                      >
+                        #{ord.orderId || ord.orderNumber || ord._id.slice(-6).toUpperCase()}
+                      </span>
+                      {getStatusBadge(ord.orderStatus || ord.status)}
+                    </div>
+
+                    {/* Customer & Time */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.65rem' }}>
+                      <div
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          backgroundColor: '#EEF2FF',
+                          color: '#4F46E5',
+                          fontSize: '0.8rem',
+                          fontWeight: 800,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {customerName.charAt(0).toUpperCase()}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '0.88rem' }}>
+                          {customerName}
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
+                          {ord.customerDetails?.phone || ord.phone || 'Bangalore'} • {new Date(ord.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontWeight: 900, fontSize: '1.05rem', color: '#0F172A' }}>
+                          ₹{(ord.totalAmount ?? ord.totalPrice ?? 0).toLocaleString('en-IN')}
+                        </div>
+                        <span style={{ fontSize: '0.66rem', color: '#64748B', fontWeight: 700 }}>
+                          {totalItemsCount} {totalItemsCount === 1 ? 'dish' : 'dishes'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Items preview */}
+                    <div
+                      style={{
+                        backgroundColor: '#F8FAFC',
+                        borderRadius: '8px',
+                        padding: '0.5rem 0.65rem',
+                        fontSize: '0.75rem',
+                        color: '#475569',
+                        marginBottom: '0.75rem',
+                        border: '1px solid #F1F5F9',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {itemsSummary || 'Chef Platter Dish'}
+                    </div>
+
+                    {/* Mobile Action Buttons */}
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      {ord.orderStatus === 'Order Placed' ? (
+                        <button
+                          onClick={() => handleAdvanceStatus(ord._id, ord.orderStatus)}
+                          disabled={isUpdating}
+                          style={{
+                            flex: 1,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px',
+                            padding: '0.55rem',
+                            borderRadius: '9px',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            backgroundColor: '#059669',
+                            color: '#FFFFFF',
+                            cursor: 'pointer',
+                            border: 'none',
+                          }}
+                        >
+                          <ChefHat size={14} />
+                          <span>{isUpdating ? 'Updating...' : 'Accept & Cook ➔'}</span>
+                        </button>
+                      ) : ord.orderStatus === 'Preparing' ? (
+                        <button
+                          onClick={() => handleAdvanceStatus(ord._id, ord.orderStatus)}
+                          disabled={isUpdating}
+                          style={{
+                            flex: 1,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px',
+                            padding: '0.55rem',
+                            borderRadius: '9px',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            backgroundColor: '#7C3AED',
+                            color: '#FFFFFF',
+                            cursor: 'pointer',
+                            border: 'none',
+                          }}
+                        >
+                          <Bike size={14} />
+                          <span>{isUpdating ? 'Updating...' : 'Dispatch Rider ➔'}</span>
+                        </button>
+                      ) : ord.orderStatus === 'Out for Delivery' ? (
+                        <button
+                          onClick={() => handleAdvanceStatus(ord._id, ord.orderStatus)}
+                          disabled={isUpdating}
+                          style={{
+                            flex: 1,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px',
+                            padding: '0.55rem',
+                            borderRadius: '9px',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            backgroundColor: '#10B981',
+                            color: '#FFFFFF',
+                            cursor: 'pointer',
+                            border: 'none',
+                          }}
+                        >
+                          <CheckCircle2 size={14} />
+                          <span>{isUpdating ? 'Updating...' : 'Confirm Delivery'}</span>
+                        </button>
+                      ) : null}
+
+                      <button
+                        onClick={() => setSelectedOrder(ord)}
+                        className="admin-btn admin-btn-secondary"
+                        style={{ padding: '0.55rem 0.85rem', fontSize: '0.8rem', borderRadius: '9px' }}
+                      >
+                        <Eye size={14} />
+                        <span>Inspect</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
 

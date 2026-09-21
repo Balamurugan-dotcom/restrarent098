@@ -208,7 +208,7 @@ const Navbar = () => {
                           fontWeight: 600,
                         }}
                       >
-                        <ShieldCheck size={16} /> Admin Console (5174)
+                        <ShieldCheck size={16} /> Admin Console
                       </a>
                     )}
 

@@ -60,16 +60,6 @@ const Footer = () => {
               <li>
                 <Link to="/my-orders">Track Orders</Link>
               </li>
-              <li>
-                <a
-                  href="http://localhost:5174"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: '#FDBA74', fontWeight: 600 }}
-                >
-                  Admin Operations Portal (Port 5174)
-                </a>
-              </li>
             </ul>
           </div>
 
